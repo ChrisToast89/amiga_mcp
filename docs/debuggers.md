@@ -65,3 +65,9 @@ Talks to the patched [fs-uae build](https://github.com/geekychris/fsuae_remote_p
 You can mix them: set a hardware watchpoint with the FS-UAE debugger to find *where* something happens, then attach the bridge debugger to step through the surrounding source. The two run side-by-side without interfering.
 
 ---
+
+## WinUAE native debugging
+
+The additional [WinUAE backend](winuae-debugger.md) provides native CPU, memory,
+breakpoint, process and exception controls through the WinUAE tab and MCP.
+It uses GDB directly and works without a running guest bridge.
