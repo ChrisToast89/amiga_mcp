@@ -71,6 +71,7 @@ graph LR
 ### Minimal App — Hello World
 
 ```c
+#include <stdio.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include "bridge_client.h"
@@ -94,6 +95,7 @@ int main(void)
 ### Variables — Remote Monitoring
 
 ```c
+#include <stdio.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include "bridge_client.h"
@@ -144,6 +146,9 @@ The host can now:
 ### Hooks — Remote Function Calls
 
 ```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include <proto/exec.h>
 #include <proto/dos.h>
 #include "bridge_client.h"
@@ -216,6 +221,7 @@ From Web UI: Hooks panel → Call
 ### Memory Regions — Named Memory Areas
 
 ```c
+#include <stdio.h>
 #include <proto/exec.h>
 #include "bridge_client.h"
 
