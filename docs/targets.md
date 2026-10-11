@@ -16,7 +16,7 @@ that stream is a deployment choice — three well-supported shapes:
 
 | Profile | Transport | Bridge process runs in | Amiga TCP stack |
 |---|---|---|---|
-| `local-fsuae` | PTY symlink | FS-UAE on this host | n/a (byte stream is the PTY) |
+| `local-fsuae` | TCP to `127.0.0.1:2345` (PTY as an override) | FS-UAE on this host | n/a (FS-UAE exposes the serial port) |
 | `real-amiga` | TCP on the LAN | A real Amiga (Amiberry / stock 68k iron) | RoadShow / AmiTCP (`bsdsocket.library`) |
 | `pi-amikit` | TCP on the LAN | AmiKit inside Amiberry on a Raspberry Pi | Amiberry's built-in `bsdsocket_emu` |
 
@@ -47,7 +47,36 @@ Profile fields overlay on top of the flat `[serial]` / `[emulator]` sections
 in `devbench.toml`, so shared defaults (`server_port`, `deploy_dir`, FS-UAE RPC
 settings) stay in one place and each profile only sets what it needs to change.
 
-### 1. `local-fsuae` — FS-UAE on this host, PTY transport
+### 1. `local-fsuae` — FS-UAE on this host
+
+The checked-in profile uses TCP: FS-UAE exposes the Amiga serial port as a
+TCP listener and devbench connects to it.
+
+```toml
+[profiles.local-fsuae]
+mode = "tcp"
+host = "127.0.0.1"
+port = 2345
+auto_start_emulator = true
+```
+
+FS-UAE side (`.fs-uae` config):
+```ini
+serial_port = tcp://127.0.0.1:2345
+```
+
+Amiga side (`Startup-Sequence` or `User-Startup`):
+```
+Run >NIL: DH2:Dev/amiga-bridge          ; no args = serial mode
+```
+
+**Ordering:** FS-UAE must be listening before devbench connects. With
+`auto_start_emulator = true`, devbench starts FS-UAE itself and then connects.
+
+#### PTY override
+
+To use a PTY symlink instead, override the profile in your local
+configuration:
 
 ```toml
 [profiles.local-fsuae]
@@ -56,18 +85,13 @@ pty_path = "/tmp/amiga-serial"
 auto_start_emulator = true
 ```
 
-FS-UAE side (`.fs-uae` config):
+and point FS-UAE at the symlink:
 ```ini
 serial_port = /tmp/amiga-serial
 ```
 
-Amiga side (`Startup-Sequence` or `User-Startup`):
-```
-Run >NIL: DH2:Dev/amiga-bridge          ; no args = serial mode
-```
-
-**Ordering matters:** devbench must start *before* FS-UAE (it creates the
-symlink). This is the mode `[emulator] auto_start = true` handles.
+In PTY mode devbench must start *before* FS-UAE, because devbench creates
+the symlink.
 
 ### 2. `real-amiga` — real Amiga on the LAN, TCP transport
 

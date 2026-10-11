@@ -82,7 +82,8 @@ The typical cycle when building Amiga software with Claude Code:
 6. **Debug** — `amiga_inspect_memory()`, `amiga_last_crash()`, `amiga_disassemble()`
 7. **Iterate** — `amiga_stop_client()`, fix code, repeat from step 2
 
-Or in one shot: `amiga_build_deploy_run("myproject")` does steps 2-4 together.
+Or in one shot: `amiga_build_deploy_run("myproject", "DH2:Dev/myproject")` does steps 2-4 together.
+Without the command argument it only builds and deploys.
 
 ### How Each Tool Category Helps
 

@@ -136,6 +136,23 @@ All tools are available through Claude Code when connected to the MCP server.
 Once symbols are loaded, the disassembler annotates function entry points and source
 line changes, and crash reports include symbolic register annotations and stack traces.
 
+### Bridge Debugger
+
+Drives one Amiga task through the bridge daemon. See the
+[debugger guide](debuggers.md) for when to use it instead of the FS-UAE debugger.
+
+| Tool | Parameters | Description |
+|---|---|---|
+| `amiga_debug_attach` | `target` | Attach to a task by name or hex address |
+| `amiga_debug_detach` | — | Remove all breakpoints and resume the target |
+| `amiga_set_breakpoint` | `address`, `project?` | Set a breakpoint at a hex address or symbol name |
+| `amiga_clear_breakpoint` | `id_or_address` | Remove a breakpoint by ID or hex address |
+| `amiga_list_breakpoints` | — | List active breakpoints |
+| `amiga_step` | — | Single-step one instruction; returns registers and source location |
+| `amiga_next` | — | Step over a function call |
+| `amiga_continue` | — | Resume until the next breakpoint |
+| `amiga_backtrace` | `project?` | Annotated call stack |
+
 ### Audio
 
 | Tool | Parameters | Description |

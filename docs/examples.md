@@ -104,7 +104,10 @@ static char player_name[32] = "Player1";
 
 int main(void)
 {
-    ab_init("game");
+    if (ab_init("game") != 0) {
+        printf("Bridge not running\n");
+        return 20;
+    }
 
     /* Register variables — host can read and write these */
     ab_register_var("score", AB_TYPE_I32, &score);
@@ -151,7 +154,14 @@ static LONG difficulty = 1;
 static int hook_set_difficulty(const char *args, char *result, int bufSize)
 {
     if (args && args[0]) {
-        difficulty = strtol(args, NULL, 10);
+        char *end;
+        long value = strtol(args, &end, 10);
+
+        if (*end != '\0' || value < 1 || value > 10) {
+            strncpy(result, "Difficulty must be 1-10", bufSize - 1);
+            return 1;
+        }
+        difficulty = value;
         sprintf(result, "Difficulty set to %ld", (long)difficulty);
     } else {
         sprintf(result, "Current difficulty: %ld", (long)difficulty);
@@ -169,7 +179,10 @@ static int hook_reset(const char *args, char *result, int bufSize)
 int main(void)
 {
     BOOL running = TRUE;
-    ab_init("game");
+    if (ab_init("game") != 0) {
+        printf("Bridge not running\n");
+        return 20;
+    }
 
     ab_register_var("difficulty", AB_TYPE_I32, &difficulty);
 
@@ -217,7 +230,10 @@ static struct GameState state = {100, 50, 2, 1, 0, 1};
 
 int main(void)
 {
-    ab_init("game");
+    if (ab_init("game") != 0) {
+        printf("Bridge not running\n");
+        return 20;
+    }
 
     /* Register a named memory region the host can inspect */
     ab_register_memregion("gamestate",
@@ -269,8 +285,8 @@ Claude Code with `amiga_set_var("ball_color", "1")`.
 | Gotcha | Fix |
 |---|---|
 | `sprintf` returns `char*`, not `int` | Use `strlen()` after if you need length |
-| `%d` reads 16-bit WORD | Always use `%ld` with `(long)` cast |
-| `%x` reads 16-bit WORD | Always use `%lx` with `(unsigned long)` cast |
+| amiga.lib `sprintf` (`RawDoFmt`): `%d` reads a 16-bit WORD | Always use `%ld` with `(long)` cast |
+| amiga.lib `sprintf` (`RawDoFmt`): `%x` reads a 16-bit WORD | Always use `%lx` with `(unsigned long)` cast |
 | `%c` misaligns stack | Use `%s` with a 2-char string buffer |
 | Default stack is 4KB | Make large buffers `static` |
 | No memory protection | Buffer overflow crashes the entire OS |

@@ -9,9 +9,10 @@
 
 ### Debugging & Inspection
 
-- **Source-level debugging**: Map addresses to C source lines using DWARF/STABS debug info from the cross-compiler. Show source context in memory inspector.
-- **Breakpoint support**: Use 68k TRAP instructions or the ILLEGAL opcode to implement software breakpoints. Bridge daemon could patch/unpatch code at runtime.
-- **Stack trace**: Walk the 68k stack frames to produce symbolic backtraces when an app crashes or hits a breakpoint.
+Breakpoints, stepping, symbolic backtraces and STABS address-to-line lookup
+already exist; see the [debugger guide](debuggers.md).
+
+- **Source context**: Show the source lines around an address in the memory inspector.
 - **Watchpoints**: Monitor memory addresses for changes and notify the host when values change (polled or via custom exception handler).
 
 ### Build & Workflow

@@ -11,7 +11,7 @@ DevBench exposes two independent debuggers, each with its own UI tab, MCP tool f
 
 ### Bridge debugger — "what is my app doing?"
 
-**UI tab:** `Debugger` &nbsp;&nbsp; **MCP prefix:** `amiga_debugger_*` &nbsp;&nbsp; **API prefix:** `/api/debugger/*`
+**UI tab:** `Debugger` &nbsp;&nbsp; **MCP tools:** `amiga_debug_attach`, `amiga_set_breakpoint`, `amiga_step`, … &nbsp;&nbsp; **API prefix:** `/api/debugger/*`
 
 Talks to the `amiga-bridge` daemon running in Amiga RAM, over the serial link (TCP or PTY). Source-level: knows about your symbols, lines, locals, call stack. Drives one of your processes via `Launch & Attach`.
 
@@ -31,7 +31,7 @@ Talks to the `amiga-bridge` daemon running in Amiga RAM, over the serial link (T
 
 **UI tab:** `FS-UAE` &nbsp;&nbsp; **MCP prefix:** `amiga_fsuae_*` &nbsp;&nbsp; **API prefix:** `/api/fsuae/*`
 
-Talks to the patched [fs-uae build](https://github.com/geekychris/fsuae_remote_patch) over HTTP. Emulator-level: pauses the 68k CPU itself, sees every memory access, every cycle. No bridge daemon needed.
+Talks to the patched [fs-uae build](https://github.com/geekychris/fsuae_remote_patch) over HTTP. Emulator-level: pauses the 68k CPU itself, with breakpoints and address-specific memory watchpoints. No bridge daemon needed.
 
 **Best for:**
 - "Who keeps clobbering `$DFF180`?" — hardware-style watchpoints with R/W/I and mustchange
