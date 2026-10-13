@@ -22,6 +22,7 @@ Exits 0 when every check passes.
 import argparse
 import json
 import os
+import re
 import sys
 import time
 import urllib.request
@@ -68,6 +69,12 @@ class Mcp:
         if result.get("isError") or "error" in res:
             raise RuntimeError(text or str(res.get("error")))
         return text
+
+
+def has_client(clients_text, name):
+    """True when amiga_list_clients output ("Clients (1): a(3), b(4)") has `name`."""
+    listed = clients_text.split(":", 1)[-1]
+    return name in re.findall(r"([^\s,()]+)\(\d+\)", listed)
 
 
 def binary_arch(path):
@@ -151,7 +158,7 @@ def main():
     def wait_gone():
         for _ in range(20):
             out = mcp.call("amiga_list_clients")
-            if CLIENT not in out:
+            if not has_client(out, CLIENT):
                 return True, out
             time.sleep(0.5)
         return False, f"still registered: {out}"
@@ -164,11 +171,16 @@ def main():
 
     def stop_client():
         out = mcp.call("amiga_stop_client", name=CLIENT)
+        if not out.startswith("[ok]"):
+            return False, out
         ok, detail = wait_gone()
         return ok, out if ok else detail
 
-    if target and CLIENT in mcp.call("amiga_list_clients"):
-        check("stop a hello_world left running", stop_left_running)
+    if target and has_client(mcp.call("amiga_list_clients"), CLIENT):
+        # With the old one still registered the checks below could see it
+        # instead of the one this test launches
+        if not check("stop a hello_world left running", stop_left_running):
+            target = None
 
     if target:
         def push():
@@ -183,7 +195,7 @@ def main():
             def registered():
                 for _ in range(30):
                     out = mcp.call("amiga_list_clients")
-                    if CLIENT in out:
+                    if has_client(out, CLIENT):
                         return True, out
                     time.sleep(0.5)
                 return False, out
