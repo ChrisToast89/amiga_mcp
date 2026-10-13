@@ -9,12 +9,14 @@ and reports exactly what works and what doesn't.
 """
 
 import json
+import os
 import sys
 import time
 import urllib.request
 import urllib.error
 
-BASE = "http://localhost:3000"
+# PORT=3001 for the classic 68k devbench (scripts/start.sh); 3000 is AmigaOS 4
+BASE = f"http://localhost:{os.environ.get('PORT', '3000')}"
 
 def api(method, path, body=None):
     """Make an API call, return (status, data_dict, elapsed_ms)."""
@@ -103,7 +105,8 @@ def main():
         issues = []
         if chip < 100:
             issues.append(f"freeChip={chip} (suspiciously low)")
-        if fast > 500_000_000:
+        # Above 32 bits means a parse error; the OS4 guest really has ~1 GB free
+        if fast >= 2**32:
             issues.append(f"freeFast={fast} (suspiciously high)")
         return len(issues) == 0, "; ".join(issues) if issues else ""
 

@@ -21,14 +21,14 @@ examples: bridge $(EXAMPLES)
 
 # Per-example build target: `make dot_chase`
 $(EXAMPLES):
-	$(DOCKER_RUN) make -C examples/$@
+	$(DOCKER_RUN) make -C examples/$@ ARCH=m68k
 
 clean: $(addsuffix .clean,$(EXAMPLES))
 	$(DOCKER_RUN) make -C amiga-bridge clean
 
 # Per-example clean target: `make dot_chase.clean`
 $(addsuffix .clean,$(EXAMPLES)):
-	$(DOCKER_RUN) make -C examples/$(basename $@) clean
+	$(DOCKER_RUN) make -C examples/$(basename $@) ARCH=m68k clean
 
 # Setup and startup: see SETUP.md
 setup:            ## install everything (both targets), then check

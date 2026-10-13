@@ -15,7 +15,10 @@ CFLAGS  ?= -std=c99 -Wall -Wextra -Wpedantic -O2 -g \
 LDFLAGS ?=
 
 # Extracted pure-C sources under test.
-SRCS = ../src/script_util.c test_bridge.c
+# Host objects stay in this directory: ../src/*.o belong to the Amiga
+# (m68k or PPC) build, and sharing them breaks whichever build runs second.
+vpath %.c ../src
+SRCS = script_util.c test_bridge.c
 OBJS = $(SRCS:.c=.o)
 
 TEST_BIN = test_bridge
