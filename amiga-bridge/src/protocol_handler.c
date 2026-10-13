@@ -1619,11 +1619,19 @@ static void handle_stop(const char *args)
         return;
     }
 
-    /* Send signal to the client's task */
+    /* Send signal to the client's task. Its reply port belongs to the task
+     * that registered, so signal that: looking the name up with FindTask can
+     * hit another task of the same name, such as an earlier run of the same
+     * program that is still loaded, and the client never sees the signal. */
     {
-        struct Task *task;
+        struct Task *task = NULL;
         Forbid();
-        task = FindTask((CONST_STRPTR)ce->name);
+        if (ce->replyPort) {
+            task = ce->replyPort->mp_SigTask;
+        }
+        if (!task) {
+            task = FindTask((CONST_STRPTR)ce->name);
+        }
         if (task) {
             Signal(task, sigMask);
         }
