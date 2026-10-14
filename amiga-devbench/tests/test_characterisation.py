@@ -100,9 +100,14 @@ def test_mcp_tool_registration_golden():
     assert len(expected) == 129
     actual = sorted(t.name for t in asyncio.run(mcp.list_tools()))
     added = {
-        "amiga_winuae_control", "amiga_winuae_registers", "amiga_winuae_read_memory",
-        "amiga_winuae_write_memory", "amiga_winuae_disassemble", "amiga_winuae_breakpoint",
-        "amiga_winuae_inspect", "amiga_winuae_process_break", "amiga_winuae_exception_stops",
+        "amiga_winuae_autosnap", "amiga_winuae_breakpoint", "amiga_winuae_checkpoint",
+        "amiga_winuae_condition", "amiga_winuae_control", "amiga_winuae_copper",
+        "amiga_winuae_custom", "amiga_winuae_disassemble", "amiga_winuae_dma_watch",
+        "amiga_winuae_exception_stops", "amiga_winuae_fd", "amiga_winuae_history",
+        "amiga_winuae_inspect", "amiga_winuae_lookup", "amiga_winuae_process_break",
+        "amiga_winuae_range_step", "amiga_winuae_read_memory", "amiga_winuae_registers",
+        "amiga_winuae_snapshot_diff", "amiga_winuae_snapshots", "amiga_winuae_stack",
+        "amiga_winuae_watch", "amiga_winuae_write_memory",
     }
     assert set(actual) - set(expected) == added, "unexpected tool additions"
     assert set(expected) - set(actual) == set(), "tools removed"
