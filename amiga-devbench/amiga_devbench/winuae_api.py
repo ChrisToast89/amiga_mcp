@@ -14,9 +14,9 @@ def make_winuae_endpoint(debugger: WinuaeDebugger):
         try:
             body = bytearray()
             async for chunk in request.stream():
-                body.extend(chunk)
-                if len(body) > 16384:
+                if len(body) + len(chunk) > 16384:
                     return JSONResponse({'ok': False, 'error': 'Request too large'}, status_code=413)
+                body.extend(chunk)
             args = json.loads(body) if body else {}
             if not isinstance(args, dict) or 'action' in args:
                 raise DebugError('Expected an object of operation parameters')

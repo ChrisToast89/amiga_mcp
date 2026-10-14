@@ -164,6 +164,18 @@ def test_wait_timeout_preserves_execution_and_does_not_block_pause():
     asyncio.run(run())
 
 
+def test_resume_outside_devbench_clears_the_old_stop():
+    async def run():
+        async with session() as (c,t):
+            await c.call('connect'); await c.call('pause')
+            t.running = True  # resumed from the WinUAE GUI
+            assert (await c.call('status'))['execution'] == 'running'
+            t.commands.clear()
+            assert (await c.call('pause'))['execution'] == 'stopped'
+            assert 'INTERRUPT' in t.commands
+    asyncio.run(run())
+
+
 def test_timeout_disconnects_before_a_late_response_can_be_reused():
     async def run():
         async with session(timeout=.03) as (c,t):

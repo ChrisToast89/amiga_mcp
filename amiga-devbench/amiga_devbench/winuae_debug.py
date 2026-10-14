@@ -265,6 +265,8 @@ class WinuaeDebugger:
         if state.get('debugger_stopped'):
             self.execution = 'stopped'
             self._stop.set()
+        elif self.execution != 'stopped':
+            self._stop.clear()  # Resumed elsewhere, e.g. from the WinUAE GUI.
         return state
 
     def _paused(self) -> None:

@@ -4510,7 +4510,8 @@ def create_app(args: Any, cfg: DevBenchConfig | None = None) -> Starlette:
 
             method = request.method
             req_body = None
-            if method in ("POST", "PUT", "PATCH"):
+            # The WinUAE endpoint limits and reads its own bodies.
+            if method in ("POST", "PUT", "PATCH") and not path.startswith("/api/winuae/"):
                 try:
                     raw = await request.body()
                     if raw:
