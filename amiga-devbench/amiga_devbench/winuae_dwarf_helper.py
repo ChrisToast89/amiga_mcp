@@ -8,6 +8,9 @@ import struct
 import sys
 
 
+CALLEE_SAVED = (2, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14)
+
+
 def emit(value):
     print(json.dumps(value, allow_nan=False), flush=True)
 
@@ -427,7 +430,9 @@ class Analysis:
                 row, cfa, return_column = self.frame_rule(lookup, regs)
                 if cfa <= regs[15] or cfa - regs[15] > 1048576: raise ValueError('Invalid caller stack progression')
                 if return_column not in (24, 25): raise ValueError('Unsupported m68k return column')
-                caller = {}
+                # Callee-saved registers (D2-D7, A2-A6 in the m68k ABI) keep their
+                # value unless the CFI says where they were saved.
+                caller = {reg: regs[reg] for reg in CALLEE_SAVED if reg in regs}
                 for reg, rule in row.items():
                     if not isinstance(reg, int) or reg not in list(range(16)) + [return_column]: continue
                     if rule.type == 'OFFSET': caller[reg] = int.from_bytes(self.read(checked(cfa + rule.arg), 4), 'big')

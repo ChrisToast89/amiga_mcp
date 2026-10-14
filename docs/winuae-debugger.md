@@ -40,8 +40,9 @@ winuae_debug_port = 2346
 
 `enabled` must be a boolean and `port` an integer; other types stop DevBench
 at startup with an error naming the key. The web UI's config editor does not
-show these keys; edit the file. The default port, 2345, is also WinUAE's default. These examples use 2346,
-so that another GDB client can keep 2345; set the same port in WinUAE.
+show these keys; edit the file. The default port, 2345, is also WinUAE's
+default. These examples use 2346, so that another GDB client can keep 2345;
+set the same port in WinUAE.
 
 Leave the global setting disabled, and set `winuae_debug_enabled = false`
 in other profiles. The endpoint is read at startup; restart DevBench after
@@ -68,7 +69,8 @@ focus. The configuration file is not modified. The emulator controls and
 `amiga_emulator_*` tools start, stop and restart it, and floppy changes
 restart it with the new disks. A WinUAE started elsewhere counts as
 DevBench's only if it uses the same configuration file, so Stop never ends
-an unrelated WinUAE.
+an unrelated WinUAE. Recognizing such an instance uses `pgrep`, so it works
+on macOS and Linux; on Windows, DevBench manages only a WinUAE it started.
 
 ### Or launch WinUAE yourself
 

@@ -161,7 +161,10 @@ async def _fd(d: WinuaeDebugger, operation: str = 'libraries', offset: Any = Non
         return [dict(library=k, functions=len(v)) for k, v in sorted(FD_TABLES.items())]
     if operation == 'lookup':
         if isinstance(offset, str):
-            offset = int(offset, 0)
+            try:
+                offset = int(offset.strip(), 10) if offset.strip().lstrip('+-').isdigit() else int(offset, 0)
+            except ValueError:
+                raise DebugError('offset must be a library vector offset such as -552') from None
         if type(offset) is not int or not 6 <= abs(offset) <= 0x8000:
             raise DebugError('offset must be a library vector offset such as -552')
         return fd_lookup(offset, library)
@@ -171,11 +174,10 @@ async def _fd(d: WinuaeDebugger, operation: str = 'libraries', offset: Any = Non
             raise DebugError(f'No FD table for {library}')
         return [dict(offset=o, name=n) for o, n in sorted(FD_TABLES[key].items(), reverse=True)]
     if operation == 'load':
-        file = Path(str(path or '')).expanduser()
-        if not file.is_file() or file.stat().st_size > 1024 * 1024:
-            raise DebugError('Supply the path of an .fd file of at most 1 MiB')
+        from .winuae_files import read_file_async
+        text = (await read_file_async(path, 1024 * 1024)).decode('latin-1')
         key = library_key(library)
-        FD_TABLES[key] = parse_fd(file.read_text('latin-1'))
+        FD_TABLES[key] = parse_fd(text)
         return dict(library=key, functions=len(FD_TABLES[key]))
     raise DebugError('FD operation must be libraries, lookup, list or load')
 

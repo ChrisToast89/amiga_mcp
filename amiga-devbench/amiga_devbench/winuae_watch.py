@@ -152,7 +152,7 @@ async def _dma_watch(d: WinuaeDebugger, operation: str = 'list', id: Any = None,
     for name in names:
         source |= SOURCES[name]
     command = f'dma-watch add {start:x} {size:x} {bits:x} {source:x}'
-    ident = integer(int(await d.monitor_text(command) or ''), 'DMA watch id', 255)
+    ident = integer((await d.monitor_text(command) or '').strip(), 'DMA watch id', 255)
     owned[ident] = command
     return dict(id=ident)
 
@@ -204,7 +204,7 @@ async def _rearm(d: WinuaeDebugger) -> None:
         d.state[key] = {}
         for command in owned.values():
             if key == 'dma_watches':
-                d.state[key][int(await d.monitor_text(command) or '')] = command
+                d.state[key][integer((await d.monitor_text(command) or '').strip(), 'DMA watch id', 255)] = command
             else:
                 reply = await d._monitor(command)
                 d.state[key][integer(reply['id'], 'id', 255)] = command

@@ -17,14 +17,14 @@ from typing import Any
 
 from .winuae_debug import REGISTERS, DebugError, WinuaeDebugger, action, integer
 from .winuae_diagnostics import matching_fault
-from .winuae_files import parse_symbols, read_file, section_base
+from .winuae_files import parse_symbols, read_file_async, section_base
 
 HELPER = Path(__file__).with_name('winuae_dwarf_helper.py')
 TIME_LIMIT, READ_LIMIT, BYTE_LIMIT, OUTPUT_LIMIT = 15, 512, 65536, 1024 * 1024
 
 
 async def dwarf_tool(d: WinuaeDebugger, kind: str, args: dict) -> dict:
-    data = read_file(args.get('file'))
+    data = await read_file_async(args.get('file'))
     parsed = parse_symbols(data)
     if parsed['format'] != 'elf32-m68k' or int.from_bytes(data[16:18], 'big') != 2:
         raise DebugError('DWARF tools need a linked ELF32 m68k executable')
@@ -70,7 +70,9 @@ async def dwarf_tool(d: WinuaeDebugger, kind: str, args: dict) -> dict:
                 raise DebugError('Ambiguous or overlapping section mappings')
         runtime.append(current)
     request = dict(action=kind, elf=base64.b64encode(data).decode(), mappings=runtime, registers=registers,
-                   expression=expression, max_frames=max_frames, address=address)
+                   expression=expression, max_frames=max_frames)
+    if address is not None:
+        request['address'] = address  # Otherwise the helper uses the PC.
     result = await run_helper(d, request)
     return dict(context=context, **result)
 
@@ -78,10 +80,12 @@ async def dwarf_tool(d: WinuaeDebugger, kind: str, args: dict) -> dict:
 async def run_helper(d: WinuaeDebugger, request: dict) -> dict:
     try:
         process = await asyncio.create_subprocess_exec(
-            sys.executable, '-I', str(HELPER), stdin=asyncio.subprocess.PIPE,
+            # -E ignores PYTHON* variables but, unlike -I, keeps user-site
+            # packages, where pip --user installs pyelftools.
+            sys.executable, '-E', str(HELPER), stdin=asyncio.subprocess.PIPE,
             stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE, limit=OUTPUT_LIMIT)
-    except OSError as exc:
-        raise DebugError(f'Cannot start the DWARF helper: {exc}') from None
+    except (OSError, NotImplementedError) as exc:  # Windows selector loops lack subprocesses.
+        raise DebugError(f'Cannot start the DWARF helper: {exc!r}') from None
     reads = read_bytes = output = 0
     try:
         async def converse() -> dict:

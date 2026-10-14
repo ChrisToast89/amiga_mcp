@@ -283,3 +283,44 @@ def test_winuae_launch_arguments_and_floppies(tmp_path):
         with pytest.raises(DebugError, match='existing disk image'):
             await d.call('disk', operation='insert', drive=0, file=str(tmp_path / 'missing.adf'))
     asyncio.run(disk_action())
+
+
+def test_cross_origin_requests_are_refused():
+    import httpx
+    from starlette.applications import Starlette
+    from starlette.routing import Route
+    from amiga_devbench.winuae_api import make_winuae_endpoint
+
+    async def body():
+        app = Starlette(routes=[Route('/api/winuae/{action}', make_winuae_endpoint(WinuaeDebugger()), methods=['GET', 'POST'])])
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url='http://localhost:3000') as c:
+            assert (await c.post('/api/winuae/lookup', json={'address': 4}, headers={'Origin': 'http://evil.example'})).status_code == 403
+            same = await c.post('/api/winuae/lookup', json={'address': 4}, headers={'Origin': 'http://localhost:3000'})
+            assert same.status_code == 200 and (await c.post('/api/winuae/lookup', json={'address': 4})).status_code == 200
+    asyncio.run(body())
+
+
+def test_bad_fd_offsets_are_debug_errors():
+    async def body():
+        d = WinuaeDebugger()
+        with pytest.raises(DebugError, match='offset'):
+            await d.call('fd', operation='lookup', offset='abc')
+        assert (await d.call('fd', operation='lookup', offset='-0552'))['name'] == 'OpenLibrary'
+    asyncio.run(body())
+
+
+def test_dwarf_source_without_address_lets_the_helper_use_the_pc(tmp_path, monkeypatch):
+    from amiga_devbench import winuae_dwarf
+    elf = tmp_path / 'linked.elf'
+    elf.write_bytes(elf_bytes())
+    seen = {}
+
+    async def helper(d, request):
+        seen.update(request)
+        return {}
+    monkeypatch.setattr(winuae_dwarf, 'run_helper', helper)
+
+    async def test(c, t):
+        await c.call('source', file=str(elf), mappings=[dict(section='.text', address=0x1000, size=8)])
+        assert 'address' not in seen and seen['registers']['PC'] == 0x10000
+    run(test)

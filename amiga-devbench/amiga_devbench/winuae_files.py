@@ -8,6 +8,7 @@ Nothing here relocates ELF sections implicitly or infers C types.
 """
 from __future__ import annotations
 
+import asyncio
 import hashlib
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -24,6 +25,11 @@ def read_file(value: Any, maximum: int = MAX_FILE) -> bytes:
     if not value or not path.is_file() or path.stat().st_size > maximum:
         raise DebugError(f'Supply a regular file of at most {maximum} bytes')
     return path.read_bytes()
+
+
+async def read_file_async(value: Any, maximum: int = MAX_FILE) -> bytes:
+    """read_file in a worker thread, so large files do not block the loop."""
+    return await asyncio.to_thread(read_file, value, maximum)
 
 
 @dataclass
@@ -164,7 +170,7 @@ def relocate(hunks: list[Hunk], placements: Any) -> tuple[list[tuple[int, int]],
 @action('hunk_inspect', locked=False, stopped=False)
 async def _hunk_inspect(d: WinuaeDebugger, file: Any = None) -> dict:
     """Validate a Hunk executable and list its hunks and first 1024 symbols."""
-    hunks = parse_hunk(read_file(file))
+    hunks = parse_hunk(await read_file_async(file))
     symbols = [dict(name=n, offset=o, hunk=h.index) for h in hunks for n, o in h.symbols]
     return dict(hunks=[dict(index=h.index, size=h.size, kind=h.kind, memory=h.memory, payload_size=len(h.data),
                             relocations=len(h.relocations), symbols=len(h.symbols)) for h in hunks],
@@ -175,7 +181,7 @@ async def _hunk_inspect(d: WinuaeDebugger, file: Any = None) -> dict:
 async def _hunk_load(d: WinuaeDebugger, file: Any = None, placements: Any = None) -> list:
     """Relocate a Hunk executable into RAM the caller has reserved. This is
     a debug loader: it neither allocates memory nor creates a process."""
-    hunks = parse_hunk(read_file(file))
+    hunks = parse_hunk(await read_file_async(file))
     regions, images = relocate(hunks, placements)
     for i, image in enumerate(images):
         if image:
@@ -281,7 +287,7 @@ def parse_symbols(data: bytes) -> dict:
 @action('symbols', locked=False, stopped=False)
 async def _symbols(d: WinuaeDebugger, file: Any = None, prefix: Any = '', limit: Any = 256) -> dict:
     """List Hunk or ELF symbols and sections of a host file."""
-    data = read_file(file)
+    data = await read_file_async(file)
     parsed = parse_symbols(data)
     if not isinstance(prefix, str) or len(prefix) > 1024:
         raise DebugError('Invalid symbol prefix')
@@ -330,7 +336,7 @@ async def _symbol_read(d: WinuaeDebugger, file: Any = None, symbol: Any = None, 
     """Read an exact symbol from the running program, located through loaded
     segments (Hunk) or explicit section mappings (ELF). The format is the
     caller's choice; no C types are inferred."""
-    parsed = parse_symbols(read_file(file))
+    parsed = parse_symbols(await read_file_async(file))
     if not isinstance(symbol, str) or not symbol or len(symbol) > 1024:
         raise DebugError('Expected an exact symbol name')
     wanted = None if section is None else integer(section, 'section', 4095)

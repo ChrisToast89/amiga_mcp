@@ -273,7 +273,7 @@
     const files = [...data.slots, ...data.auto];
     for (const slot of files) {
       const tr = document.createElement('tr');
-      tr.innerHTML = `<td>${slot.slot}</td><td>${slot.size ? new Date(slot.mtime * 1000).toLocaleString() : 'empty'}</td>
+      tr.innerHTML = `<td>${escape(slot.slot)}</td><td>${slot.size ? new Date(slot.mtime * 1000).toLocaleString() : 'empty'}</td>
         <td><input value="${escape(data.labels[slot.slot] || '')}" placeholder="label"></td><td></td>`;
       tr.querySelector('input').addEventListener('change', e => perform(() => request('snapshots', {operation:'label', slot:slot.slot, label:e.target.value})));
       for (const [label, operation] of [['Save', 'save'], ['Load', 'load']]) {
@@ -285,7 +285,7 @@
       }
       tbody.append(tr);
     }
-    const options = files.filter(s => s.size).map(s => `<option>${s.slot}</option>`).join('');
+    const options = files.filter(s => s.size).map(s => `<option>${escape(s.slot)}</option>`).join('');
     el('diffa').innerHTML = options; el('diffb').innerHTML = options;
     const ring = data.autosnap;
     el('autosnap').textContent = ring.enabled ? `every ${ring.interval}s, ring ${ring.ring_size}, ${ring.saves} saves` +
@@ -318,10 +318,10 @@
 
   const handlers = {
     connect: () => run('connect'), disconnect: () => run('disconnect'), pause: () => run('pause'), resume: () => run('resume'),
-    step: () => run('step', true), step100: () => request('step', {count:100}),
+    step: () => run('step', true), step100: () => run('step', false, {count:100}),
     step_over: () => run('step_over', true),
     step_out: async () => { const r = await request('step_out'); el('error').textContent = r.returned ? '' : `Step out stopped: ${r.reason}`; },
-    'soft-reset': () => request('reset', {hard:false}), 'hard-reset': () => request('reset', {hard:true}),
+    'soft-reset': () => run('reset', false, {hard:false}), 'hard-reset': () => run('reset', false, {hard:true}),
     refresh: () => cpu(),
     'write-register': async () => { await request('registers', {register:el('reg').value, value:el('value').value}); await cpu(); },
     disassemble: () => disassemble(),
@@ -418,8 +418,8 @@
     variable: async () => show('dwarf', await request('variable', {file:el('exefile').value, mappings:mappings(), expression:el('expression').value})),
     backtrace: async () => show('dwarf', await request('backtrace', {file:el('exefile').value, mappings:mappings()})),
   };
-  async function run(action, waitForStop = false) {
-    state = await request(action); render();
+  async function run(action, waitForStop = false, args = {}) {
+    state = await request(action, args); render();
     if (waitForStop) state = await request('wait', {timeout:5});
     if (state.execution === 'stopped') await cpu();
   }

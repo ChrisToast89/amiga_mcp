@@ -52,13 +52,14 @@ async def _checkpoint(d: WinuaeDebugger, operation: str, path: Path) -> dict:
         path.parent.mkdir(parents=True, exist_ok=True)
         # The CPU runs to the next frame start, and any stop cancels the
         # save; lift this session's breakpoints for that run.
-        points = list(d._points)
-        for kind, address, size in points:
-            await d._ok(f'z{kind},{address:x},{size:x}')
+        points = []
         try:
+            for kind, address, size in list(d._points):
+                await d._ok(f'z{kind},{address:x},{size:x}')
+                points.append((kind, address, size))
             await d.monitor_text(f'checkpoint save {path}', 'checkpoint')
         finally:
-            for kind, address, size in points:
+            for kind, address, size in points:  # Only those actually lifted.
                 await d._ok(f'Z{kind},{address:x},{size:x}')
     d.execution = 'stopped'
     d._stop.set()
@@ -178,9 +179,11 @@ class AutoSnapshots:
                 running = d.execution != 'stopped'
                 if running:
                     await d.call('pause')
-                await d.call('checkpoint', operation='save', path=f'auto-{self.next_slot % self.ring_size}')
-                if running:
-                    await d.call('resume')
+                try:
+                    await d.call('checkpoint', operation='save', path=f'auto-{self.next_slot % self.ring_size}')
+                finally:
+                    if running and d.connected:
+                        await d.call('resume')
                 self.next_slot += 1
                 self.saves += 1
                 self.last_save, self.last_error = time.time(), None

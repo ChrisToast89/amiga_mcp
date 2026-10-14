@@ -273,8 +273,9 @@ class EmulatorManager:
                 self._binary, *config_arg,
                 stdout=asyncio.subprocess.DEVNULL,
                 stderr=asyncio.subprocess.DEVNULL,
-                # Create new process group so we can cleanly kill it
-                preexec_fn=os.setsid,
+                # A new process group (session) so we can cleanly kill it.
+                **({"creationflags": subprocess.CREATE_NEW_PROCESS_GROUP} if os.name == "nt"
+                   else {"start_new_session": True}),
                 env=env,
             )
             self._started_at = time.time()
@@ -303,8 +304,11 @@ class EmulatorManager:
         logger.info("Stopping emulator (pid %d)", pid)
 
         try:
-            # Send SIGTERM to the process group
-            os.killpg(os.getpgid(pid), signal.SIGTERM)
+            # Send SIGTERM to the process group (Windows: terminate the process)
+            if os.name == "nt":
+                self._process.terminate()
+            else:
+                os.killpg(os.getpgid(pid), signal.SIGTERM)
         except (OSError, ProcessLookupError):
             pass
 
@@ -314,7 +318,10 @@ class EmulatorManager:
         except asyncio.TimeoutError:
             logger.warning("Emulator didn't stop gracefully, force killing")
             try:
-                os.killpg(os.getpgid(pid), signal.SIGKILL)
+                if os.name == "nt":
+                    self._process.kill()
+                else:
+                    os.killpg(os.getpgid(pid), signal.SIGKILL)
             except (OSError, ProcessLookupError):
                 pass
             try:

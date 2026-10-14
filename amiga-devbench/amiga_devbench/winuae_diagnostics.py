@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from .winuae_debug import REGISTERS, DebugError, WinuaeDebugger, action, integer
+from .winuae_files import read_file_async
 
 MAX_CAPTURE = 256 * 1024
 
@@ -184,9 +185,7 @@ async def _load(d: WinuaeDebugger, file: Any = None, address: Any = None) -> dic
     """Copy a raw binary into RAM and verify it. Hunk executables are
     rejected; use hunk_load, which relocates them."""
     path = Path(str(file or '')).expanduser()
-    if not path.is_file() or path.stat().st_size > 16 * 1024 * 1024:
-        raise DebugError('Supply a regular file of at most 16 MiB')
-    data = path.read_bytes()
+    data = await read_file_async(path)
     if data[:4] == b'\0\0\x03\xf3':
         raise DebugError('Hunk executables need hunk_load with explicit RAM placements')
     start = integer(address, 'address')
