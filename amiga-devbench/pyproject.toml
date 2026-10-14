@@ -23,6 +23,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8"]
+# DWARF source, variable and backtrace tools for WinUAE guests.
+dwarf = ["pyelftools==0.32"]
 
 [project.scripts]
 amiga-devbench = "amiga_devbench.__main__:main"

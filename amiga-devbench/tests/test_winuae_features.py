@@ -8,6 +8,9 @@ import pytest
 
 from amiga_devbench import winuae_chipset, winuae_state
 from amiga_devbench.winuae_debug import DebugError, WinuaeDebugger
+from amiga_devbench.winuae_diagnostics import planar_png
+from amiga_devbench.winuae_files import parse_hunk, parse_symbols, relocate
+from amiga_devbench.winuae_guest import build_sequence
 from tests.test_winuae_debug import Target, packet, session
 
 
@@ -182,3 +185,75 @@ def test_state_files_parse_diff_and_report_saved_registers(tmp_path):
     diff = winuae_state.diff_states(tmp_path / 'a.uss', tmp_path / 'b.uss')
     assert diff['unchanged'] == 2 and diff['changed'][0]['chunk'] == 'CRAM'
     assert diff['changed'][0]['differing_bytes'] == 4 and diff['changed'][0]['regions'][0]['start'] == 768
+
+
+def test_input_sequences_and_text():
+    taps = build_sequence('type_text', dict(text='Hi', layout='us'))
+    assert taps[0] == [0, 0, 0, 0x60, 1] and taps[1] == [0, 0, 0, 0x25, 1]
+    assert sum(step[0] for step in taps) == 12
+    with pytest.raises(DebugError, match='Unsupported'):
+        build_sequence('type_text', dict(text='é', layout='us'))
+    steps = build_sequence('input_sequence', dict(steps=[dict(action='mouse', axis='x', delta=-5, after_frames=2),
+                                                         dict(action='wait', after_frames=10)]))
+    assert steps == [[2, 1, 0, 0, 0xfffffffb], [10, 3, 0, 0, 0]]
+
+
+def hunk_bytes():
+    longs = lambda *values: b''.join(struct.pack('>I', v) for v in values)
+    return (longs(0x3f3, 0, 2, 0, 1, 2, 1) + longs(0x3e9, 2) + bytes.fromhex('4e714e7500000000') +
+            longs(0x3ec, 1, 1, 4, 0) + longs(0x3f0, 2) + b'start\0\0\0' + longs(0, 0, 0x3f2) +
+            longs(0x3eb, 1, 0x3f2))
+
+
+def test_hunk_parse_and_relocation():
+    hunks = parse_hunk(hunk_bytes())
+    assert [(h.kind, h.size) for h in hunks] == [('code', 8), ('bss', 4)] and hunks[0].symbols == [('start', 0)]
+    _, images = relocate(hunks, [dict(address=0x40000, capacity=8, memory='chip'),
+                                 dict(address=0x40100, capacity=4, memory='fast')])
+    assert images[0].hex() == '4e714e7500040100' and images[1] == bytearray(4)
+    with pytest.raises(DebugError, match='overlap'):
+        relocate(hunks, [dict(address=0x40000, capacity=8, memory='chip'), dict(address=0x40004, capacity=4, memory='chip')])
+
+
+def elf_bytes():
+    strtab = b'\0main\0'
+    shstrtab = b'\0.text\0.symtab\0.strtab\0.shstrtab\0'
+    text = bytes.fromhex('4e714e714e714e75')
+    symtab = bytes(16) + struct.pack('>IIIBBH', 1, 0x1004, 4, 0x12, 0, 1)
+    body = text + symtab + strtab + shstrtab
+    offsets = [52, 52 + len(text), 52 + len(text) + len(symtab), 52 + len(text) + len(symtab) + len(strtab)]
+    shoff = 52 + len(body)
+    shoff += (4 - shoff % 4) % 4
+    sections = [bytes(40),
+                struct.pack('>10I', 1, 1, 6, 0x1000, offsets[0], len(text), 0, 0, 2, 0),
+                struct.pack('>10I', 7, 2, 0, 0, offsets[1], len(symtab), 3, 1, 4, 16),
+                struct.pack('>10I', 15, 3, 0, 0, offsets[2], len(strtab), 0, 0, 1, 0),
+                struct.pack('>10I', 23, 3, 0, 0, offsets[3], len(shstrtab), 0, 0, 1, 0)]
+    header = (b'\x7fELF\x01\x02\x01' + bytes(9) + struct.pack('>HHIIIIIHHHHHH', 2, 4, 1, 0x1000, 0, shoff, 0, 52, 32, 0, 40, 5, 4))
+    data = header + body
+    return data + bytes(shoff - len(data)) + b''.join(sections)
+
+
+def test_elf_and_hunk_symbol_tables():
+    elf = parse_symbols(elf_bytes())
+    assert elf['format'] == 'elf32-m68k' and elf['sections'][0]['name'] == '.text'
+    assert elf['symbols'] == [dict(name='main', section=1, offset=4, size=4)]
+    assert parse_symbols(hunk_bytes())['symbols'][0]['name'] == 'start'
+
+
+def test_planar_png_is_valid():
+    png = planar_png(8, 1, [b'\xf0'], 2, [0x000000, 0xffffff])
+    assert png[:8] == b'\x89PNG\r\n\x1a\n'
+    rows = zlib.decompress(png[png.index(b'IDAT') + 4:png.index(b'IEND') - 8])
+    assert rows[:4] == b'\x00\xff\xff\xff' and rows[13:16] == b'\x00\x00\x00'
+
+
+def test_memory_search_spans_chunks():
+    async def test(c, t):
+        t.memory[0x7fe:0x802] = b'\x12\x34\x56\x78'
+        t.memory[0x900:0x902] = b'\x12\x34'
+        result = await c.call('memory_search', address=0, length=0x1000, hex='1234')
+        assert result['matches'] == [0x7fe, 0x900]
+        limited = await c.call('memory_search', address=0, length=0x1000, hex='1234', max_matches=1)
+        assert limited['limit_reached'] and limited['next_address'] == 0x7ff
+    run(test)

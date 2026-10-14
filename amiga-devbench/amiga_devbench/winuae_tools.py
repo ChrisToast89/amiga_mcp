@@ -1,6 +1,10 @@
 # SPDX-License-Identifier: MIT
 """MCP entry points for the shared WinUAE native debugger session."""
+import base64
+import json
 from typing import Any, Literal
+
+from mcp.server.fastmcp import Image
 
 from .winuae_debug import WinuaeDebugger, DebugError
 
@@ -16,6 +20,15 @@ async def call(action: str, **args):
     if _debugger is None:
         raise DebugError('WinUAE debugger is not initialized')
     return await _debugger.call(action, **{k: v for k, v in args.items() if v is not None})
+
+
+def _with_image(result: dict, key: str = 'png_base64') -> list:
+    """Return JSON metadata and, for MCP clients, the PNG itself."""
+    data = result.pop(key, None)
+    content: list[Any] = [json.dumps(result)]
+    if data:
+        content.append(Image(data=base64.b64decode(data), format='png'))
+    return content
 
 
 def register_winuae_tools(mcp):
@@ -223,6 +236,52 @@ def register_winuae_tools(mcp):
         dos, intuition, graphics (from the AmigaOS 3.2 NDK). Needs no connection."""
         return await call('fd', operation=operation, offset=offset, library=library, path=path)
 
+    @mcp.tool()
+    async def amiga_winuae_memory_search(address: str, length: int, hex: str, max_matches: int = 256,
+                                         alignment: int = 1) -> dict:
+        """Find exact bytes in a range of up to 16 MiB, including overlapping matches.
+        next_address continues after max_matches. Requires pause."""
+        return await call('memory_search', address=address, length=length, hex=hex,
+                          max_matches=max_matches, alignment=alignment)
+
+    @mcp.tool()
+    async def amiga_winuae_bitmap(width: int, height: int, planes: list[str], palette: list[str],
+                                  row_stride: int | None = None) -> list:
+        """Decode 1..8 bitplanes (addresses, least significant first) with 2^planes RGB colors
+        to a PNG image. row_stride defaults to a word-aligned row. HAM, EHB and display-mode
+        inference are not supported. Requires pause."""
+        return _with_image(await call('bitmap', width=width, height=height, planes=planes,
+                                      palette=palette, row_stride=row_stride))
+
+    @mcp.tool()
+    async def amiga_winuae_screenshot(path: str | None = None) -> list:
+        """Save the emulated display as a PNG on the host (default: a temporary file) and
+        return it. Works without the guest bridge. Requires pause."""
+        return _with_image(await call('screenshot', path=path))
+
+    # ─── Diagnosis ───
+
+    @mcp.tool()
+    async def amiga_winuae_capture(ranges: list[dict] | None = None) -> dict:
+        """Capture registers, the stop reason and up to 16 memory ranges ({address, length},
+        256 KiB in total) in one call. Requires pause."""
+        return await call('capture', ranges=ranges)
+
+    @mcp.tool()
+    async def amiga_winuae_postmortem(file: str | None = None, mappings: list[dict] | None = None,
+                                      max_frames: int = 32) -> dict:
+        """A bounded crash report: fault-time and current registers, disassembly, stack bytes,
+        loaded segments and guest output. The fault context is used only when it matches the
+        current exception stop. With a linked ELF file and mappings, includes a DWARF
+        backtrace. Requires pause."""
+        return await call('postmortem', file=file, mappings=mappings, max_frames=max_frames)
+
+    @mcp.tool()
+    async def amiga_winuae_guest_output(operation: Literal['on', 'off', 'read', 'clear'] = 'read') -> dict:
+        """Capture debug messages the guest sends through uaelib function 86 (64 records,
+        4096 bytes). Not console or serial output. Requires pause."""
+        return await call('guest_output', operation=operation)
+
     # ─── State ───
 
     @mcp.tool()
@@ -253,3 +312,98 @@ def register_winuae_tools(mcp):
         byte regions by offset. Needs no connection."""
         return await call('snapshot_diff', a=a, b=b)
 
+    # ─── Input ───
+
+    @mcp.tool()
+    async def amiga_winuae_input(
+        event: Literal['key', 'mouse', 'button', 'joystick', 'status', 'release'] = 'status',
+        code: int | None = None, port: int = 0, axis: Literal['x', 'y'] | None = None,
+        delta: int | None = None, button: int | None = None,
+        direction: Literal['left', 'right', 'up', 'down'] | None = None, pressed: bool | None = None,
+    ) -> dict:
+        """Send raw Amiga keys, mouse motion (-127..127 counts), buttons 0-2 or joystick
+        directions on ports 0/1 through WinUAE's input handlers, without the guest bridge and
+        without changing execution. status lists held input; release releases it. A stopped
+        guest sees input when it resumes; use the sequence tools for taps."""
+        return await call('input', event=event, code=code, port=port, axis=axis, delta=delta,
+                          button=button, direction=direction, pressed=pressed)
+
+    @mcp.tool()
+    async def amiga_winuae_input_sequence(steps: list[dict], resume: bool = False) -> dict:
+        """Queue up to 256 input events, each with after_frames (emulated frames, 3600 in total)
+        and the amiga_winuae_input fields, using action key/mouse/button/joystick/wait. Runs
+        asynchronously, pauses while stopped and releases held input at the end."""
+        return await call('input_sequence', steps=steps, resume=resume)
+
+    @mcp.tool()
+    async def amiga_winuae_key_tap(codes: list[int], hold_frames: int = 3, gap_frames: int = 3,
+                                   resume: bool = False) -> dict:
+        """Tap a raw key or chord: press in order, hold, release in reverse."""
+        return await call('key_tap', codes=codes, hold_frames=hold_frames, gap_frames=gap_frames, resume=resume)
+
+    @mcp.tool()
+    async def amiga_winuae_type_text(text: str, layout: Literal['us'] = 'us', hold_frames: int = 3,
+                                     gap_frames: int = 3, resume: bool = False) -> dict:
+        """Type up to 60 printable ASCII characters, tab or newline, assuming the guest uses
+        the US keymap."""
+        return await call('type_text', text=text, layout=layout, hold_frames=hold_frames,
+                          gap_frames=gap_frames, resume=resume)
+
+    # ─── Programs, symbols and DWARF ───
+
+    @mcp.tool()
+    async def amiga_winuae_load(file: str, address: str) -> dict:
+        """Copy a raw binary into RAM at address and verify it. Hunk executables need
+        amiga_winuae_hunk. Requires pause."""
+        return await call('load', file=file, address=address)
+
+    @mcp.tool()
+    async def amiga_winuae_hunk(operation: Literal['inspect', 'load'], file: str,
+                                placements: list[dict] | None = None) -> Any:
+        """inspect validates a Hunk executable and lists hunks and symbols. load relocates it
+        into RAM you reserved: one {address, capacity, memory: chip|fast} per hunk. It zeroes
+        BSS, verifies writes and rolls back on failure; it does not create a process. load
+        requires pause."""
+        if operation == 'inspect':
+            return await call('hunk_inspect', file=file)
+        return await call('hunk_load', file=file, placements=placements)
+
+    @mcp.tool()
+    async def amiga_winuae_symbols(file: str, prefix: str = '', limit: int = 256) -> dict:
+        """List the symbols and sections of a Hunk or ELF32 m68k file. Needs no connection."""
+        return await call('symbols', file=file, prefix=prefix, limit=limit)
+
+    @mcp.tool()
+    async def amiga_winuae_symbol_read(file: str, symbol: str, format: str = 'bytes', length: int | None = None,
+                                       count: int = 1, offset: int = 0, section: int | None = None,
+                                       process: str | None = None, mappings: list[dict] | None = None) -> dict:
+        """Read an exact symbol of the running program. Hunk sections map to loaded segments;
+        ELF needs mappings such as {section: ".data", segment: 1} or {section: 1, address,
+        size}. format is bytes (with length) or u8/s8/u16/s16/u32/s32 (with count); no C types
+        are inferred. Requires pause."""
+        return await call('symbol_read', file=file, symbol=symbol, format=format, length=length, count=count,
+                          offset=offset, section=section, process=process, mappings=mappings)
+
+    @mcp.tool()
+    async def amiga_winuae_source(file: str, mappings: list[dict], address: str | None = None,
+                                  context: Literal['current', 'fault'] = 'current', process: str | None = None) -> dict:
+        """Source file, line and function for the PC or an address, from a linked m68k ELF file
+        with DWARF and its runtime section mappings. Needs the dwarf extra (pyelftools).
+        Requires pause."""
+        return await call('source', file=file, mappings=mappings, address=address, context=context, process=process)
+
+    @mcp.tool()
+    async def amiga_winuae_variable(file: str, mappings: list[dict], expression: str,
+                                    context: Literal['current', 'fault'] = 'current', process: str | None = None) -> dict:
+        """Read a C variable with .member, ->member and [index] selectors from DWARF type and
+        location information. Unsupported or optimized-out locations are errors. Requires pause."""
+        return await call('variable', file=file, mappings=mappings, expression=expression, context=context,
+                          process=process)
+
+    @mcp.tool()
+    async def amiga_winuae_backtrace(file: str, mappings: list[dict], max_frames: int = 32,
+                                     context: Literal['current', 'fault'] = 'current', process: str | None = None) -> dict:
+        """Unwind up to 64 frames from DWARF call-frame information; stops with a reason
+        instead of guessing. Requires pause."""
+        return await call('backtrace', file=file, mappings=mappings, max_frames=max_frames, context=context,
+                          process=process)
