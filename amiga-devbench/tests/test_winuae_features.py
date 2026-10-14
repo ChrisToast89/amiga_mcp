@@ -3,10 +3,11 @@ import asyncio
 import json
 import struct
 import zlib
+from types import SimpleNamespace
 
 import pytest
 
-from amiga_devbench import winuae_chipset, winuae_state
+from amiga_devbench import emulator, winuae_chipset, winuae_state
 from amiga_devbench.winuae_debug import DebugError, WinuaeDebugger
 from amiga_devbench.winuae_diagnostics import planar_png
 from amiga_devbench.winuae_files import parse_hunk, parse_symbols, relocate
@@ -257,3 +258,28 @@ def test_memory_search_spans_chunks():
         limited = await c.call('memory_search', address=0, length=0x1000, hex='1234', max_matches=1)
         assert limited['limit_reached'] and limited['next_address'] == 0x7ff
     run(test)
+
+
+def test_winuae_launch_arguments_and_floppies(tmp_path):
+    cfg = SimpleNamespace(winuae_debug_enabled=True, winuae_debug_port=2346)
+    assert emulator.winuae_launch_args(cfg)[:8] == ['-s', 'use_gui=no', '-s', 'debugging_features=gdbserver',
+                                                     '-s', 'gdb_port=2346', '-s', 'cpu_threaded=false']
+    app = tmp_path / 'WinUAE.app' / 'Contents' / 'MacOS'
+    app.mkdir(parents=True)
+    (app / 'WinUAE').write_text('')
+    assert emulator.winuae_executable(str(tmp_path / 'WinUAE.app')) == str(app / 'WinUAE')
+    manager = emulator.EmulatorManager(binary=str(app / 'WinUAE'))
+    disk = tmp_path / 'game.adf'
+    disk.write_bytes(bytes(901120))
+    manager.set_floppy(0, str(disk))
+    manager.set_floppy(1, None)
+    assert manager.kind == 'winuae' and manager.floppies == {0: str(disk.resolve()), 1: ''}
+
+    async def disk_action():
+        d = WinuaeDebugger(enabled=True)
+        d.emulator = manager
+        result = await d.call('disk', operation='insert', drive=2, file=str(disk))
+        assert not result['restarted'] and result['floppies'][2] == str(disk.resolve())
+        with pytest.raises(DebugError, match='existing disk image'):
+            await d.call('disk', operation='insert', drive=0, file=str(tmp_path / 'missing.adf'))
+    asyncio.run(disk_action())

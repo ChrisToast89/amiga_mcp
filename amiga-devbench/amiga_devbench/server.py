@@ -28,7 +28,7 @@ from .builder import Builder
 from .config import DevBenchConfig
 from .deployer import Deployer
 from . import file_transfer
-from .emulator import EmulatorManager
+from .emulator import EmulatorManager, winuae_launch_args
 from .fsuae_rpc import FsuaeRpcClient
 from .winuae_debug import WinuaeDebugger
 from .winuae_tools import init_winuae_tools
@@ -1148,6 +1148,8 @@ def create_app(args: Any, cfg: DevBenchConfig | None = None) -> Starlette:
             extra_env={**_build_fsuae_env(cfg), **cfg.emulator_env},
             process_name=cfg.emulator_process,
         )
+        if _emulator.kind == "winuae":
+            _emulator.set_launch_args(winuae_launch_args(cfg))
     else:
         _emulator = EmulatorManager(event_bus=_event_bus)
 
@@ -1156,6 +1158,7 @@ def create_app(args: Any, cfg: DevBenchConfig | None = None) -> Starlette:
         port=cfg.winuae_debug_port if cfg else 2345,
         enabled=cfg.winuae_debug_enabled if cfg else False,
     )
+    winuae_debug.emulator = _emulator if getattr(_emulator, "kind", "") == "winuae" else None
     init_winuae_tools(winuae_debug)
 
     # FS-UAE remote-debug HTTP client (no-op against stock fs-uae)

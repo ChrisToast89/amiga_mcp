@@ -9,6 +9,7 @@ from mcp.server.fastmcp import Image
 from .winuae_debug import WinuaeDebugger, DebugError
 
 _debugger: WinuaeDebugger | None = None
+DISK_IMAGES = ('.adf', '.adz', '.dms', '.ipf', '.scp')
 
 
 def init_winuae_tools(debugger: WinuaeDebugger) -> None:
@@ -352,10 +353,19 @@ def register_winuae_tools(mcp):
     # ─── Programs, symbols and DWARF ───
 
     @mcp.tool()
-    async def amiga_winuae_load(file: str, address: str) -> dict:
-        """Copy a raw binary into RAM at address and verify it. Hunk executables need
-        amiga_winuae_hunk. Requires pause."""
+    async def amiga_winuae_load(file: str, address: str | None = None, drive: int = 0) -> dict:
+        """Copy a raw binary into RAM at address and verify it, or insert a disk image (.adf,
+        .adz, .dms, .ipf) into a drive. Hunk executables need amiga_winuae_hunk."""
+        if file.lower().endswith(DISK_IMAGES):
+            return await call('disk', operation='insert', drive=drive, file=file)
         return await call('load', file=file, address=address)
+
+    @mcp.tool()
+    async def amiga_winuae_disk(operation: Literal['status', 'insert', 'eject'] = 'status', drive: int = 0,
+                                file: str | None = None) -> dict:
+        """Insert or eject a floppy image. A WinUAE launched by DevBench restarts to apply it,
+        and the debugger reconnects; otherwise it applies at the next start."""
+        return await call('disk', operation=operation, drive=drive, file=file)
 
     @mcp.tool()
     async def amiga_winuae_hunk(operation: Literal['inspect', 'load'], file: str,

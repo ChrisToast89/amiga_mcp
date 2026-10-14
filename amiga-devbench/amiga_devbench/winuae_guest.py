@@ -7,6 +7,7 @@ timed in emulated frames and pause while the debugger is stopped.
 """
 from __future__ import annotations
 
+import asyncio
 import base64
 import tempfile
 import time
@@ -173,3 +174,46 @@ async def _screenshot(d: WinuaeDebugger, path: Any = None, include_image: Any = 
     if boolean(include_image, 'include_image') and file.stat().st_size <= 4 * 1024 * 1024:
         result['png_base64'] = base64.b64encode(file.read_bytes()).decode()
     return result
+
+
+@action('disk', locked=False, stopped=False)
+async def _disk(d: WinuaeDebugger, operation: str = 'status', drive: Any = 0, file: Any = None) -> dict:
+    """Insert or eject a floppy image. WinUAE applies drive changes at
+    launch, so a WinUAE that DevBench started is restarted; the debugger
+    reconnects if it was connected."""
+    manager = d.emulator
+    if manager is None:
+        raise DebugError('Disk changes need a WinUAE launched by DevBench ([emulator] binary pointing to WinUAE)')
+    if operation == 'status':
+        return dict(floppies=manager.floppies, running=manager.is_running)
+    number = integer(drive, 'drive', 3)
+    if operation == 'insert':
+        image = Path(str(file or '')).expanduser()
+        if not image.is_file():
+            raise DebugError('Supply the path of an existing disk image')
+        manager.set_floppy(number, str(image))
+    elif operation == 'eject':
+        manager.set_floppy(number, None)
+    else:
+        raise DebugError('Disk operation must be status, insert or eject')
+    owned = manager._process is not None and manager._process.returncode is None
+    if not owned:
+        return dict(floppies=manager.floppies, restarted=False,
+                    note='Applies when DevBench next starts WinUAE')
+    reconnect = d.connected
+    if reconnect:
+        await d.aclose()
+    if not await manager.restart():
+        raise DebugError('WinUAE did not restart; see the DevBench log')
+    if reconnect:
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + 30
+        while True:
+            try:
+                await d.call('connect')
+                break
+            except DebugError:
+                if loop.time() > deadline:
+                    raise DebugError('WinUAE restarted, but its GDB server did not answer in time') from None
+                await asyncio.sleep(0.5)
+    return dict(floppies=manager.floppies, restarted=True, connected=d.connected)
