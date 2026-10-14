@@ -414,4 +414,6 @@ The web UI connects to `/api/events` for real-time updates:
 
 The [WinUAE native debugger](winuae-debugger.md) has separate explicit connection
 controls, run control, registers, disassembly, RAM editing, breakpoints,
-watchpoints, program-entry stops and exception/process inspection.
+watchpoints, program-entry stops and exception/process inspection. Its
+`[winuae_debug]` settings are not in the config editor; edit `devbench.toml`
+and restart DevBench.

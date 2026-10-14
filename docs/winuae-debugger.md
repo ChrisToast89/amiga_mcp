@@ -44,7 +44,9 @@ winuae_debug_host = "127.0.0.1"
 winuae_debug_port = 2346
 ```
 
-The default port, 2345, is also WinUAE's default. These examples use 2346,
+`enabled` must be a boolean and `port` an integer; other types stop DevBench
+at startup with an error naming the key. The web UI's config editor does not
+show these keys; edit the file. The default port, 2345, is also WinUAE's default. These examples use 2346,
 so that another GDB client can keep 2345; set the same port in WinUAE.
 
 Leave the global setting disabled, and set `winuae_debug_enabled = false`
