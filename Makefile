@@ -10,7 +10,7 @@ DOCKER_RUN = docker run --rm -v $(PWD):/work -w /work $(DOCKER_IMAGE)
 # cloning if the directory is empty.
 EXAMPLES := $(patsubst examples/%/Makefile,%,$(wildcard examples/*/Makefile))
 
-.PHONY: setup doctor start start-68k start-os4 stop status devbench all examples bridge clean host-tests $(EXAMPLES) $(addsuffix .clean,$(EXAMPLES))
+.PHONY: setup doctor start start-68k start-os4 stop status retro devbench all examples bridge clean host-tests $(EXAMPLES) $(addsuffix .clean,$(EXAMPLES))
 
 all: bridge examples
 
@@ -51,6 +51,9 @@ stop:             ## stop the emulators and devbenches
 
 status:           ## what's running
 	scripts/start.sh status
+
+retro:            ## Retro Launcher: full-screen menu for the 68k, OS4, Atari and 3DO emulators
+	scripts/retro-launcher.sh
 
 devbench:         ## one devbench on the active profile (devbench.toml), :3000 (was `make start`)
 	python3 -m amiga_devbench
