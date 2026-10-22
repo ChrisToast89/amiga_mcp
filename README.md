@@ -28,6 +28,10 @@ scripts/doctor.sh    # check every prerequisite; each problem comes with its fix
 scripts/start.sh     # start the emulators + devbenches, wait until the Amigas answer
 ```
 
+To pick a machine from a full-screen menu instead (classic Amiga, AmigaOS 4,
+Atari ST and 3DO), run `make retro`. It runs the Retro Launcher from
+`../retro-launcher`.
+
 The Kickstart ROM and the AmigaOS 3.x / 4.1 installs are commercial, so
 `doctor.sh` keeps reporting them until they're in place; it says where each
 goes. The scripts are bash: on Windows, use WSL (or `scripts/install.ps1`).

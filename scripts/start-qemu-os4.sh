@@ -335,7 +335,8 @@ echo ""
 # Launch in background so we can post-launch-resize the window on macOS.
 "${QEMU_CMD[@]}" &
 QEMU_PID=$!
-if [ "$(uname -s)" = "Darwin" ] && command -v osascript >/dev/null; then
+if [ "$(uname -s)" = "Darwin" ] && command -v osascript >/dev/null \
+   && [[ "$DISPLAY_ARG" != *full-screen=on* ]]; then
     # QEMU Cocoa can't set initial window size — poll for the window
     # then resize/reposition. Fails silently if it never opens (headless
     # or QEMU exits early).
