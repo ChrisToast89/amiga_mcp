@@ -7,7 +7,7 @@ Each program has its own folder with its PNGs and one markdown file describing e
 Captured 2026-10-20.
 
 - [Classic Amiga 68k](#classic-amiga-68k) — 37 programs
-- [AmigaOS 4.1 PowerPC](#amigaos-41-powerpc) — 14 entries
+- [AmigaOS 4.1 PowerPC](#amigaos-41-powerpc) — 15 entries
 - [DevBench web UI](devbench/README.md) — 24 screens, each plain and annotated
 - [Atari ST / STE / Falcon ports](atari-st/README.md) — 21 entries (Hatari), plus annotated agent tooling
 - [3DO ports](3do/README.md) — 24 entries (Opera), plus the [3DO devbench](3do/devbench/README.md), annotated
@@ -65,6 +65,7 @@ Not captured: `aga3d` and `ham_raster` (both fail to open their 8-bit LORES scre
 | <img src="amigaos4-ppc/planet_chomp/planet_chomp-gameplay.png" width="200"> | [Planet Chomp](amigaos4-ppc/planet_chomp/planet_chomp.md) | game | A maze chase that wraps all the way round a small planet: eat every crumb while four spooks (Gloom, Spark, Mist and Moss) hunt you, and grab a golden key to turn the tables. (2 images) |
 | <img src="amigaos4-ppc/rolling_steel/rolling_steel-gameplay.png" width="200"> | [Rolling Steel](amigaos4-ppc/rolling_steel/rolling_steel.md) | game | An isometric roll-the-marble racer in the spirit of the 1984 arcade cabinet: six courses share one clock. (2 images) |
 | <img src="amigaos4-ppc/spectral_keep/spectral_keep-gameplay.png" width="200"> | [Spectral Keep](amigaos4-ppc/spectral_keep/spectral_keep.md) | game | An isometric flip-screen adventure in the Knight Lore tradition: three keeps and 24 rooms. (2 images) |
+| <img src="amigaos4-ppc/terra_strike/terra_strike-gameplay.png" width="200"> | [Terra Strike](amigaos4-ppc/terra_strike/terra_strike.md) | game | The landscape shooter ported from the classic Amiga: the same simulation, renderer and bridge interface, drawn into a pen buffer and shown in a window or full screen, with the MOD music mixed in software for AHI. (6 images) |
 | <img src="amigaos4-ppc/void_trader/void_trader-gameplay.png" width="200"> | [Void Trader](amigaos4-ppc/void_trader/void_trader.md) | game | A 3D space trading and combat game in the spirit of Elite: fly between pirates and a trading station, trade cargo, and collect bounties until you reach 5000 credits. (2 images) |
 | <img src="amigaos4-ppc/warden_keep/warden_keep-gameplay.png" width="200"> | [Warden Keep](amigaos4-ppc/warden_keep/warden_keep.md) | game | A clean-room isometric "Filmation-style" room puzzle (Fairlight, Knight Lore, Head over Heels lineage): walk an 8×8 stone room tile by tile, push barrels into place and collect the three jewels. (2 images) |
 | <img src="amigaos4-ppc/amiga-bridge/amiga-bridge-workbench.png" width="200"> | [AmigaBridge (PPC daemon)](amigaos4-ppc/amiga-bridge/amiga-bridge.md) | app | The Amiga-side half of DevBench: a resident daemon that every app links to through `libbridge` (`ab_init`, `ab_log`, `ab_register_var`, `ab_register_hook`, …) over Exec MsgPorts. (2 images) |

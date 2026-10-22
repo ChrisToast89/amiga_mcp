@@ -112,7 +112,8 @@ scripts/gdb-os4.sh amiga-bridge/amiga-bridge      # gdb-multiarch attached
 - Paula's audio registers are write-only: keep the volume/period you set in a
   variable rather than reading `custom.aud[n].ac_vol` back
 - Examples whose Makefile builds both arches (planet_chomp, rolling_steel,
-  spectral_keep): `scripts/build-example-68k.sh <name>` runs `make ARCH=m68k`
+  spectral_keep, terra_strike): `scripts/build-example-68k.sh <name>` runs
+  `make ARCH=m68k`
 
 ## Amiga C Conventions (PPC OS4)
 - Compile with `-mcrt=newlib -O2 -mcpu=440 -Wall -D__PPC__ -D__USE_INLINE__ -D__USE_OLD_TIMEVAL__`
@@ -141,9 +142,13 @@ scripts/gdb-os4.sh amiga-bridge/amiga-bridge      # gdb-multiarch attached
   *DOSBase` on PPC — OS4's `<proto/*>` already declares them as
   `struct Library *`. Gate any such declarations with `#ifndef __PPC__`.
 - **Do not use `Delay(1)`** as a frame-pacing primitive — triggers DSI
-  under our current -lauto / newlib setup. Root cause TBD; use
-  `WaitTOF()` for VBlank sync or timer.device IORequest for reliable
-  small delays.
+  under our current -lauto / newlib setup. Root cause TBD; use a
+  timer.device `TR_ADDREQUEST` for small delays.
+- **`WaitTOF()` is not a vblank wait on the QEMU guest:** it returns about
+  345 times a second, so a loop that waits on it spins the CPU and starves
+  other tasks (bridge transfers dropped from 40 KB/s to 1.2 KB/s). Pace
+  frames by sleeping on timer.device on a fixed schedule; see
+  `examples/terra_strike/main_os4.c` (`sleep_us`)
 - **No direct chip register access** (`custom.color[]`, `custom.dmacon`,
   `$DFF000`). sam460ex has no chip RAM. Use `graphics.library`
   (`WritePixel`, `RectFill`, `Draw`) or CGX APIs.
