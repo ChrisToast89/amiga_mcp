@@ -1,0 +1,18 @@
+{
+  "image": "../os4-about.png",
+  "output": "../os4-about-annotated.png",
+  "title": "DevBench — About",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        850,
+        70,
+        1500,
+        1860
+      ],
+      "label": "About AmigaDevBench",
+      "text": "Opened from the logo or About button: a tribute to the people behind the Amiga."
+    }
+  ]
+}

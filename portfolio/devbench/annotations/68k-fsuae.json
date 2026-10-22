@@ -1,0 +1,18 @@
+{
+  "image": "../68k-fsuae.png",
+  "output": "../68k-fsuae-annotated.png",
+  "title": "DevBench — FS-UAE native debugger",
+  "subtitle": "AmigaOS 3.x on FS-UAE · profile local-fsuae · :3001",
+  "items": [
+    {
+      "box": [
+        22,
+        338,
+        3156,
+        531
+      ],
+      "label": "RPC not available",
+      "text": "This tab drives a patched FS-UAE's debug RPC (CPU, breakpoints, watchpoints, memory, chipset, save states). The FS-UAE running here doesn't expose it, so the tab shows how to enable it; the tab is normally hidden in that case."
+    }
+  ]
+}

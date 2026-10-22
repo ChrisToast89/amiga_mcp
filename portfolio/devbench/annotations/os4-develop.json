@@ -1,0 +1,38 @@
+{
+  "image": "../os4-develop.png",
+  "output": "../os4-develop-annotated.png",
+  "title": "DevBench — Develop",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        22,
+        338,
+        628,
+        239
+      ],
+      "label": "Build & run",
+      "text": "Pick a project from examples/ and run it on the Amiga (MCP: amiga_run; amiga_build_deploy_run for the full loop)."
+    },
+    {
+      "box": [
+        654,
+        338,
+        628,
+        239
+      ],
+      "label": "New project",
+      "text": "Scaffold a new bridge-enabled app from a template (MCP: amiga_create_project)."
+    },
+    {
+      "box": [
+        1286,
+        338,
+        628,
+        239
+      ],
+      "label": "Test harness",
+      "text": "Live results from apps using ab_test_begin() / AB_ASSERT() / ab_test_end() (MCP: amiga_run_tests)."
+    }
+  ]
+}

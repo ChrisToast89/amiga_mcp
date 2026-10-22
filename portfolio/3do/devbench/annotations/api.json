@@ -1,0 +1,58 @@
+{
+  "image": "../api.png",
+  "output": "../api-annotated.png",
+  "title": "3DO DevBench \u2014 API explorer",
+  "subtitle": "Spectral Keep running in the patched Opera emulator \u00b7 ./3do devbench \u00b7 :3330",
+  "items": [
+    {
+      "box": [
+        299,
+        16,
+        428,
+        58
+      ],
+      "label": "Session picker",
+      "text": "Every running emulator session (DevBench's own, ./3do run windows, headless MCP sessions); every tab shows the one chosen here."
+    },
+    {
+      "box": [
+        2612,
+        227,
+        214,
+        36
+      ],
+      "label": "OpenAPI",
+      "text": "The REST API's OpenAPI 3 spec, for Postman/Insomnia."
+    },
+    {
+      "box": [
+        54,
+        288,
+        2772,
+        67
+      ],
+      "label": "Endpoints",
+      "text": "POST /api/sessions/{pid}/cmd/{name} for every command, plus sessions, projects, screen.png, SSE events and MCP at /mcp."
+    },
+    {
+      "box": [
+        54,
+        379,
+        480,
+        59
+      ],
+      "label": "Filter",
+      "text": "Narrow the ~70 commands (here: os_)."
+    },
+    {
+      "box": [
+        54,
+        454,
+        2772,
+        1946
+      ],
+      "label": "Commands",
+      "text": "Each command with its description, parameters (* = required, = default), a form to call it and its curl line."
+    }
+  ]
+}

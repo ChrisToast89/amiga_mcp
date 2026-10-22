@@ -1,0 +1,128 @@
+{
+  "image": "../68k-dashboard.png",
+  "output": "../68k-dashboard-annotated.png",
+  "title": "DevBench — Dashboard",
+  "subtitle": "AmigaOS 3.x on FS-UAE · profile local-fsuae · :3001",
+  "items": [
+    {
+      "box": [
+        614,
+        70,
+        482,
+        115
+      ],
+      "label": "Platform badge",
+      "text": "Which Amiga this devbench drives, from the active profile's build arch; the stripe along the top uses the same colour (orange = PPC, blue = 68k)."
+    },
+    {
+      "box": [
+        1108,
+        106,
+        376,
+        44
+      ],
+      "label": "Free memory",
+      "text": "Free chip and fast RAM from the last bridge heartbeat (HB line)."
+    },
+    {
+      "box": [
+        2273,
+        105,
+        188,
+        46
+      ],
+      "label": "Emulator status",
+      "text": "Whether the devbench-managed emulator process is running."
+    },
+    {
+      "box": [
+        2606,
+        99,
+        243,
+        58
+      ],
+      "label": "Arch · profile",
+      "text": "Target CPU architecture and active devbench.toml profile."
+    },
+    {
+      "box": [
+        2853,
+        102,
+        325,
+        52
+      ],
+      "label": "Bridge tri-state",
+      "text": "Red = serial disconnected, yellow = serial linked but no bridge traffic, green = bridge heartbeats flowing (pulses on each heartbeat), amber = bridge silent."
+    },
+    {
+      "box": [
+        -10,
+        236,
+        3220,
+        90
+      ],
+      "label": "Tab bar",
+      "text": "Dashboard, Logs, Files, Tools, Inspect, Develop, Debugger, Settings (plus FS-UAE when a patched FS-UAE's debug RPC is reachable)."
+    },
+    {
+      "box": [
+        22,
+        338,
+        628,
+        845
+      ],
+      "label": "Connection",
+      "text": "Serial/TCP link to the bridge daemon: host, port, log-buffer size and number of tracked variables."
+    },
+    {
+      "box": [
+        654,
+        338,
+        628,
+        845
+      ],
+      "label": "System status",
+      "text": "Latest heartbeat tick and free chip / fast memory reported by the daemon."
+    },
+    {
+      "box": [
+        1286,
+        338,
+        628,
+        845
+      ],
+      "label": "Clients",
+      "text": "Programs registered with the bridge via ab_init() (MCP: amiga_list_clients)."
+    },
+    {
+      "box": [
+        1918,
+        338,
+        628,
+        845
+      ],
+      "label": "Bridge capabilities",
+      "text": "Daemon version, protocol level, max line length and every supported command, from CAPABILITIES (MCP: amiga_capabilities)."
+    },
+    {
+      "box": [
+        22,
+        1211,
+        628,
+        390
+      ],
+      "label": "Emulator control",
+      "text": "Status, PID and uptime of the emulator, with Start / Restart / Stop (MCP: amiga_emulator_*)."
+    },
+    {
+      "box": [
+        22,
+        1629,
+        3156,
+        503
+      ],
+      "label": "Send command",
+      "text": "Raw bridge protocol console with one-click PING, LISTTASKS, LISTLIBS, MEMMAP… and the reply shown underneath."
+    }
+  ]
+}

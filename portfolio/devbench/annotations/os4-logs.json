@@ -1,0 +1,58 @@
+{
+  "image": "../os4-logs.png",
+  "output": "../os4-logs-annotated.png",
+  "title": "DevBench — Logs",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        22,
+        344,
+        620,
+        60
+      ],
+      "label": "Level filters",
+      "text": "Toggle ALL / DEBUG / INFO / WARN / ERROR messages."
+    },
+    {
+      "box": [
+        638,
+        338,
+        204,
+        72
+      ],
+      "label": "Client filter",
+      "text": "Show only one bridge client's messages."
+    },
+    {
+      "box": [
+        838,
+        340,
+        420,
+        68
+      ],
+      "label": "Search",
+      "text": "Live text filter over the buffered log."
+    },
+    {
+      "box": [
+        1254,
+        346,
+        221,
+        56
+      ],
+      "label": "Auto-scroll",
+      "text": "Follow new messages as they stream in over SSE."
+    },
+    {
+      "box": [
+        22,
+        406,
+        3156,
+        1592
+      ],
+      "label": "Live log stream",
+      "text": "CLOG lines from apps (AB_I/AB_W/AB_E…) plus daemon messages, with timestamp, level and client (MCP: amiga_log / amiga_watch_logs / amiga_tail)."
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "image": "../agent-console-debugger.png",
+  "output": "../agent-console-debugger-annotated.png",
+  "title": "Hatari agent console \u2014 Debugger tab",
+  "subtitle": "Hatari agent console (tools/agent/hatari_gui.py) \u00b7 Falcon030 running Spectral Keep \u00b7 agent API :7790",
+  "legend": "bottom",
+  "items": [
+    {
+      "box": [
+        0,
+        13,
+        1435,
+        51
+      ],
+      "label": "Toolbar",
+      "text": "Pause, Resume, run one frame or one second, cold reset and save a screenshot, plus a fast-forward toggle; each is one agent API call."
+    },
+    {
+      "box": [
+        10,
+        84,
+        1283,
+        960
+      ],
+      "label": "Live emulator screen",
+      "text": "The /screen image polled every 150 ms at 1-3x zoom; clicking, dragging and typing on it are sent to the Atari as mouse and key input."
+    },
+    {
+      "box": [
+        1613,
+        99,
+        612,
+        41
+      ],
+      "label": "Tabs",
+      "text": "Console, Joystick, Debugger and Machine."
+    },
+    {
+      "box": [
+        1372,
+        168,
+        1095,
+        44
+      ],
+      "label": "Debugger controls",
+      "text": "Break, step, step over, continue and run to breakpoint, through the /debug endpoints."
+    },
+    {
+      "box": [
+        1372,
+        229,
+        1095,
+        159
+      ],
+      "label": "Registers",
+      "text": "68k data and address registers, PC, SR, USP and ISP while the CPU is stopped."
+    },
+    {
+      "box": [
+        1372,
+        409,
+        1095,
+        239
+      ],
+      "label": "Disassembly",
+      "text": "Code at the PC, with the current instruction highlighted and branch targets resolved."
+    },
+    {
+      "box": [
+        1372,
+        667,
+        1095,
+        140
+      ],
+      "label": "Breakpoints",
+      "text": "Add by address, symbol or condition such as d0=$20; lists the active ones."
+    },
+    {
+      "box": [
+        1372,
+        838,
+        1095,
+        102
+      ],
+      "label": "Debugger command",
+      "text": "Any Hatari debugger command (here info osheader); output goes to the Console tab."
+    },
+    {
+      "box": [
+        0,
+        1058,
+        1690,
+        38
+      ],
+      "label": "Status line",
+      "text": "Emulator state, frame counter, PC, machine and TOS, screen mode, the GEM mouse position and the last debugger stop, from GET /status."
+    }
+  ]
+}

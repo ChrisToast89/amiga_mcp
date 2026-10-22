@@ -1,0 +1,88 @@
+{
+  "image": "../68k-inspect-debug.png",
+  "output": "../68k-inspect-debug-annotated.png",
+  "title": "DevBench — Inspect · Debug",
+  "subtitle": "AmigaOS 3.x on FS-UAE · profile local-fsuae · :3001",
+  "items": [
+    {
+      "box": [
+        22,
+        402,
+        1260,
+        707
+      ],
+      "label": "Symbol table",
+      "text": "Load a project's symbols, look up addresses, list functions and structs (MCP: amiga_load_symbols / amiga_lookup_symbol)."
+    },
+    {
+      "box": [
+        1316,
+        579,
+        1200,
+        500
+      ],
+      "label": "Disassembler",
+      "text": "68k disassembly of Kickstart ROM at $FC0000 (MCP: amiga_disassemble)."
+    },
+    {
+      "box": [
+        22,
+        1137,
+        1260,
+        259
+      ],
+      "label": "Crash report",
+      "text": "Bridge crash handler: enable, check the last crash (MCP: amiga_last_crash)."
+    },
+    {
+      "box": [
+        52,
+        1569,
+        1200,
+        188
+      ],
+      "label": "Memory map",
+      "text": "Exec memory lists: chip, fast and ROM regions with free/used (MEMMAP)."
+    },
+    {
+      "box": [
+        1316,
+        1980,
+        1200,
+        666
+      ],
+      "label": "Chip registers",
+      "text": "Read-safe custom-chip registers (DMACONR, INTENAR, INTREQR, VHPOSR, …) with bit decoding."
+    },
+    {
+      "box": [
+        2550,
+        1835,
+        628,
+        841
+      ],
+      "label": "Audio inspector",
+      "text": "Paula's four channels: DMA state, period, volume; read sample data from chip RAM (MCP: amiga_audio_channels / amiga_audio_sample)."
+    },
+    {
+      "box": [
+        22,
+        2704,
+        2524,
+        235
+      ],
+      "label": "SnoopDos & chip logger",
+      "text": "Trace OpenLibrary/Open/Lock… calls via SetFunction patches; log custom-chip writes."
+    },
+    {
+      "box": [
+        22,
+        2704,
+        3156,
+        498
+      ],
+      "label": "Resources, profiler, pools",
+      "text": "Per-client resource tracking, performance report and memory-pool tracking (MCP: amiga_list_resources / amiga_perf_report)."
+    }
+  ]
+}

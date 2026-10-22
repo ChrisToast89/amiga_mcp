@@ -1,0 +1,48 @@
+{
+  "image": "../os4-tools-tasks.png",
+  "output": "../os4-tools-tasks-annotated.png",
+  "title": "DevBench — Tools · Tasks",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        22,
+        402,
+        3156,
+        72
+      ],
+      "label": "Refresh / auto-refresh",
+      "text": "Re-read the Exec task list on demand or every few seconds."
+    },
+    {
+      "box": [
+        422,
+        413,
+        114,
+        50
+      ],
+      "label": "Count",
+      "text": "Number of tasks and processes."
+    },
+    {
+      "box": [
+        24,
+        480,
+        3152,
+        79
+      ],
+      "label": "Task table",
+      "text": "Name, priority, state (ready / waiting / running) and stack size for every Exec task (MCP: amiga_list_tasks)."
+    },
+    {
+      "box": [
+        24,
+        539,
+        3152,
+        74
+      ],
+      "label": "Task row",
+      "text": "One row per task or process from LISTTASKS."
+    }
+  ]
+}

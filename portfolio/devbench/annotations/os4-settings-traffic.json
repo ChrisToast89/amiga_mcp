@@ -1,0 +1,68 @@
+{
+  "image": "../os4-settings-traffic.png",
+  "output": "../os4-settings-traffic-annotated.png",
+  "title": "DevBench — Settings · Traffic",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        22,
+        402,
+        162,
+        72
+      ],
+      "label": "Kind filter",
+      "text": "All, MCP tool calls only, or REST API calls only."
+    },
+    {
+      "box": [
+        180,
+        404,
+        820,
+        68
+      ],
+      "label": "Search",
+      "text": "Free-text search over the logged requests."
+    },
+    {
+      "box": [
+        3044,
+        415,
+        134,
+        46
+      ],
+      "label": "Entry count",
+      "text": "Total entries in the traffic log."
+    },
+    {
+      "box": [
+        22,
+        474,
+        3156,
+        1700
+      ],
+      "label": "Request list",
+      "text": "Every MCP call (e.g. from Claude Code) and REST call: time, type, tool/path, duration, status."
+    },
+    {
+      "box": [
+        1767,
+        474,
+        1411,
+        1700
+      ],
+      "label": "Entry detail",
+      "text": "The selected call's arguments (Request) and the result returned (Response)."
+    },
+    {
+      "box": [
+        1789,
+        820,
+        250,
+        72
+      ],
+      "label": "Replay",
+      "text": "Re-issue the same call — handy for repeating an MCP request Claude made."
+    }
+  ]
+}

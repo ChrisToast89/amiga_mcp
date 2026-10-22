@@ -1,0 +1,59 @@
+{
+  "image": "../agent-console-console.png",
+  "output": "../agent-console-console-annotated.png",
+  "title": "Hatari agent console \u2014 Console tab",
+  "subtitle": "Hatari agent console (tools/agent/hatari_gui.py) \u00b7 Falcon030 running Spectral Keep \u00b7 agent API :7790",
+  "legend": "bottom",
+  "items": [
+    {
+      "box": [
+        0,
+        13,
+        1435,
+        51
+      ],
+      "label": "Toolbar",
+      "text": "Pause, Resume, run one frame or one second, cold reset and save a screenshot, plus a fast-forward toggle; each is one agent API call."
+    },
+    {
+      "box": [
+        10,
+        84,
+        1283,
+        960
+      ],
+      "label": "Live emulator screen",
+      "text": "The /screen image polled every 150 ms at 1-3x zoom; clicking, dragging and typing on it are sent to the Atari as mouse and key input."
+    },
+    {
+      "box": [
+        1613,
+        99,
+        612,
+        41
+      ],
+      "label": "Tabs",
+      "text": "Console, Joystick, Debugger and Machine."
+    },
+    {
+      "box": [
+        1372,
+        163,
+        1067,
+        756
+      ],
+      "label": "Program console",
+      "text": "Text the Atari program prints through NatFeats, read from GET /console: here Spectral Keep's KEEP log lines with fps, room and per-frame timings."
+    },
+    {
+      "box": [
+        0,
+        1058,
+        1690,
+        38
+      ],
+      "label": "Status line",
+      "text": "Emulator state, frame counter, PC, machine and TOS, screen mode, the GEM mouse position and the last debugger stop, from GET /status."
+    }
+  ]
+}

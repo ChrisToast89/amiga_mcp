@@ -1,0 +1,68 @@
+{
+  "image": "../game-launcher.png",
+  "output": "../game-launcher-annotated.png",
+  "title": "Hatari game launcher",
+  "subtitle": "tools/games/launcher.py \u00b7 reads atari_st_games/games.ini",
+  "items": [
+    {
+      "box": [
+        16,
+        64,
+        484,
+        1314
+      ],
+      "label": "Game list",
+      "text": "Every [section] of games.ini with the machine it needs; double-click or Return plays it."
+    },
+    {
+      "box": [
+        530,
+        18,
+        700,
+        90
+      ],
+      "label": "Title and target",
+      "text": "Machine, port directory and the 8.3 program name autostarted as C:\\<program>."
+    },
+    {
+      "box": [
+        532,
+        118,
+        1288,
+        968
+      ],
+      "label": "Screenshot",
+      "text": "The image named by the game's screenshot key, from the port's docs/."
+    },
+    {
+      "box": [
+        530,
+        1100,
+        1250,
+        200
+      ],
+      "label": "Description and controls",
+      "text": "The description and controls keys from games.ini."
+    },
+    {
+      "box": [
+        530,
+        1330,
+        1010,
+        45
+      ],
+      "label": "Actions",
+      "text": "Play (optionally make first, sound on/off) starts Hatari on the right machine through hatari-agent-run.sh; Stop Hatari quits it; Agent console opens hatari_gui.py on the same port."
+    },
+    {
+      "box": [
+        0,
+        1398,
+        1960,
+        42
+      ],
+      "label": "Status line",
+      "text": "Last log line: game count, then build and start-up messages."
+    }
+  ]
+}

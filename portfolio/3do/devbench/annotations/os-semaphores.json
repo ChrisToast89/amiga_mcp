@@ -1,0 +1,58 @@
+{
+  "image": "../os-semaphores.png",
+  "output": "../os-semaphores-annotated.png",
+  "title": "3DO DevBench \u2014 OS \u00b7 Semaphores",
+  "subtitle": "Spectral Keep running in the patched Opera emulator \u00b7 ./3do devbench \u00b7 :3330",
+  "items": [
+    {
+      "box": [
+        299,
+        16,
+        428,
+        58
+      ],
+      "label": "Session picker",
+      "text": "Every running emulator session (DevBench's own, ./3do run windows, headless MCP sessions); every tab shows the one chosen here."
+    },
+    {
+      "box": [
+        28,
+        201,
+        2824,
+        59
+      ],
+      "label": "OS views",
+      "text": "Each view walks a different Portfolio OS structure in guest RAM: tasks, items, ports, semaphores, devices, folios, graphics, audio, files, memory map, snapshots."
+    },
+    {
+      "box": [
+        2084,
+        310,
+        320,
+        56
+      ],
+      "label": "Filter",
+      "text": "Filter the table by any text (name, type, address)."
+    },
+    {
+      "box": [
+        2420,
+        318,
+        270,
+        40
+      ],
+      "label": "Auto-refresh",
+      "text": "Reload the view every 2 s while the game runs."
+    },
+    {
+      "box": [
+        54,
+        387,
+        2772,
+        1305
+      ],
+      "label": "Semaphores",
+      "text": "Semaphores with creator, whether locked and by whom, nest count and waiters: where deadlocks show up (MCP: os_inspect('semaphores'))."
+    }
+  ]
+}

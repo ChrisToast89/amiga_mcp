@@ -1,0 +1,78 @@
+{
+  "image": "../os-memory-map.png",
+  "output": "../os-memory-map-annotated.png",
+  "title": "3DO DevBench \u2014 OS \u00b7 Memory map",
+  "subtitle": "Spectral Keep running in the patched Opera emulator \u00b7 ./3do devbench \u00b7 :3330",
+  "items": [
+    {
+      "box": [
+        299,
+        16,
+        428,
+        58
+      ],
+      "label": "Session picker",
+      "text": "Every running emulator session (DevBench's own, ./3do run windows, headless MCP sessions); every tab shows the one chosen here."
+    },
+    {
+      "box": [
+        28,
+        201,
+        2824,
+        59
+      ],
+      "label": "OS views",
+      "text": "Each view walks a different Portfolio OS structure in guest RAM: tasks, items, ports, semaphores, devices, folios, graphics, audio, files, memory map, snapshots."
+    },
+    {
+      "box": [
+        2084,
+        310,
+        320,
+        56
+      ],
+      "label": "Filter",
+      "text": "Filter the table by any text (name, type, address)."
+    },
+    {
+      "box": [
+        2420,
+        318,
+        270,
+        40
+      ],
+      "label": "Auto-refresh",
+      "text": "Reload the view every 2 s while the game runs."
+    },
+    {
+      "box": [
+        54,
+        404,
+        2772,
+        221
+      ],
+      "label": "Regions",
+      "text": "DRAM (2 MB in 32 KB pages) and VRAM (1 MB in 16 KB pages) with free totals, from the kernel's free-page bitmaps."
+    },
+    {
+      "box": [
+        54,
+        480,
+        2772,
+        250
+      ],
+      "label": "Pages",
+      "text": "One square per page, coloured by owning task: kernel, system pool, shell, the game's code/data from 0x70000 and its framebuffers in VRAM; hover for owner, click to hex-dump (MCP: os_memory_map)."
+    },
+    {
+      "box": [
+        54,
+        750,
+        2772,
+        39
+      ],
+      "label": "Legend",
+      "text": "Owners; system/kernel = in use but on no task's memory list."
+    }
+  ]
+}

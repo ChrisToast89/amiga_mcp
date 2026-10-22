@@ -1,0 +1,7 @@
+# Layered Photoshop sources of the banners stay local (32-54 MB each);
+# the exported JPGs in banners/out are committed.
+*.psd
+.DS_Store
+# local state and a built binary (source: tools/winid.swift)
+tools/.mcp_session_*
+tools/winid

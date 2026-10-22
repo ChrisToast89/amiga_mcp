@@ -1,0 +1,88 @@
+{
+  "image": "../os-snapshots.png",
+  "output": "../os-snapshots-annotated.png",
+  "title": "3DO DevBench \u2014 OS \u00b7 Snapshot diff",
+  "subtitle": "Spectral Keep running in the patched Opera emulator \u00b7 ./3do devbench \u00b7 :3330",
+  "items": [
+    {
+      "box": [
+        299,
+        16,
+        428,
+        58
+      ],
+      "label": "Session picker",
+      "text": "Every running emulator session (DevBench's own, ./3do run windows, headless MCP sessions); every tab shows the one chosen here."
+    },
+    {
+      "box": [
+        28,
+        201,
+        2824,
+        59
+      ],
+      "label": "OS views",
+      "text": "Each view walks a different Portfolio OS structure in guest RAM: tasks, items, ports, semaphores, devices, folios, graphics, audio, files, memory map, snapshots."
+    },
+    {
+      "box": [
+        2084,
+        310,
+        320,
+        56
+      ],
+      "label": "Filter",
+      "text": "Filter the table by any text (name, type, address)."
+    },
+    {
+      "box": [
+        2420,
+        318,
+        270,
+        40
+      ],
+      "label": "Auto-refresh",
+      "text": "Reload the view every 2 s while the game runs."
+    },
+    {
+      "box": [
+        54,
+        387,
+        482,
+        80
+      ],
+      "label": "Take snapshot",
+      "text": "Records every item, task CPU time and memory page now (here 'title', taken on the title screen) (MCP: os_snapshot)."
+    },
+    {
+      "box": [
+        548,
+        387,
+        187,
+        80
+      ],
+      "label": "Diff vs now",
+      "text": "Compares the snapshot with the current state (MCP: os_diff)."
+    },
+    {
+      "box": [
+        54,
+        524,
+        2772,
+        79
+      ],
+      "label": "Summary",
+      "text": "Frames elapsed, items created/deleted and the memory change between the two."
+    },
+    {
+      "box": [
+        54,
+        987,
+        2772,
+        1750
+      ],
+      "label": "Changes",
+      "text": "Items created and deleted since the snapshot (leaks show up here) and CPU used per task over the interval."
+    }
+  ]
+}

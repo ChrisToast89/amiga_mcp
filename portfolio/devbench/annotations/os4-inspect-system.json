@@ -1,0 +1,108 @@
+{
+  "image": "../os4-inspect-system.png",
+  "output": "../os4-inspect-system-annotated.png",
+  "title": "DevBench — Inspect · System",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        22,
+        402,
+        1260,
+        1223
+      ],
+      "label": "System info",
+      "text": "Free chip / fast RAM, bridge client count, the task list and the loaded libraries in one view (MCP: amiga_sysinfo)."
+    },
+    {
+      "box": [
+        1286,
+        402,
+        628,
+        1223
+      ],
+      "label": "Bridge info",
+      "text": "Daemon version and uptime (MCP: amiga_version / amiga_uptime)."
+    },
+    {
+      "box": [
+        1918,
+        402,
+        628,
+        1223
+      ],
+      "label": "Volumes",
+      "text": "Mounted volumes with size and free space (MCP: amiga_list_volumes)."
+    },
+    {
+      "box": [
+        2550,
+        402,
+        628,
+        1223
+      ],
+      "label": "Exec ports",
+      "text": "Public message ports (MCP: amiga_list_ports)."
+    },
+    {
+      "box": [
+        1286,
+        1653,
+        1260,
+        365
+      ],
+      "label": "Intuition inspector",
+      "text": "Screens → windows → gadgets, with front/back/move/size actions (MCP: amiga_list_screens / amiga_list_screen_windows / amiga_list_gadgets)."
+    },
+    {
+      "box": [
+        22,
+        2046,
+        1260,
+        763
+      ],
+      "label": "Input injection",
+      "text": "Send key presses and mouse moves/clicks through input.device (MCP: amiga_input_key / amiga_input_click)."
+    },
+    {
+      "box": [
+        1286,
+        2046,
+        628,
+        763
+      ],
+      "label": "Library / device inspector",
+      "text": "Loaded libraries or devices with version and open count; click for details (MCP: amiga_list_libs / amiga_lib_info)."
+    },
+    {
+      "box": [
+        1918,
+        2046,
+        1260,
+        763
+      ],
+      "label": "Assign manager",
+      "text": "Logical assigns and their targets; add or change them (MCP: amiga_list_assigns / amiga_assign)."
+    },
+    {
+      "box": [
+        22,
+        2837,
+        2524,
+        703
+      ],
+      "label": "Fonts, locale, ARexx, clipboard",
+      "text": "Font and catalog browsers, ARexx port list + command sender, clipboard get/set (MCP: amiga_arexx_ports / amiga_arexx_send)."
+    },
+    {
+      "box": [
+        22,
+        3568,
+        3156,
+        1100
+      ],
+      "label": "Files & boot",
+      "text": "Startup-sequence editor, ENV: prefs, boot log, live file tail, checksum and protection bits (MCP: amiga_tail / amiga_checksum / amiga_protect)."
+    }
+  ]
+}

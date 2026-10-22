@@ -1,0 +1,58 @@
+{
+  "image": "../os4-files-transfer.png",
+  "output": "../os4-files-transfer-annotated.png",
+  "title": "DevBench — Files · Transfer",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        856,
+        571,
+        225,
+        52
+      ],
+      "label": "Direction",
+      "text": "Push host → Amiga or pull Amiga → host."
+    },
+    {
+      "box": [
+        856,
+        663,
+        1488,
+        76
+      ],
+      "label": "Source",
+      "text": "Host path or glob (push), or Amiga path (pull)."
+    },
+    {
+      "box": [
+        856,
+        771,
+        1488,
+        76
+      ],
+      "label": "Destination",
+      "text": "Amiga path such as DH2:Dev/ (push) or host path (pull)."
+    },
+    {
+      "box": [
+        856,
+        855,
+        164,
+        72
+      ],
+      "label": "Transfer",
+      "text": "Sends the file(s) over the serial bridge — for setups with no shared folder (MCP: amiga_transfer / amiga_push_file / amiga_pull_file)."
+    },
+    {
+      "box": [
+        822,
+        989,
+        1556,
+        160
+      ],
+      "label": "History",
+      "text": "Transfers done in this session."
+    }
+  ]
+}

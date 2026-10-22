@@ -1,0 +1,38 @@
+{
+  "image": "../os4-tools-variables.png",
+  "output": "../os4-tools-variables-annotated.png",
+  "title": "DevBench — Tools · Variables",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        182,
+        410,
+        240,
+        56
+      ],
+      "label": "Auto-refresh",
+      "text": "Re-reads registered variables periodically."
+    },
+    {
+      "box": [
+        24,
+        480,
+        3152,
+        79
+      ],
+      "label": "Variable table",
+      "text": "Client, name, type, value and a Set action for every variable apps expose with ab_register_var()."
+    },
+    {
+      "box": [
+        24,
+        539,
+        3152,
+        74
+      ],
+      "label": "Values",
+      "text": "Empty here: the running clients registered no variables (MCP: amiga_get_var / amiga_set_var)."
+    }
+  ]
+}

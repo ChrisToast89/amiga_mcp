@@ -1,0 +1,88 @@
+{
+  "image": "../memory.png",
+  "output": "../memory-annotated.png",
+  "title": "3DO DevBench \u2014 Memory",
+  "subtitle": "Spectral Keep running in the patched Opera emulator \u00b7 ./3do devbench \u00b7 :3330",
+  "items": [
+    {
+      "box": [
+        299,
+        16,
+        428,
+        58
+      ],
+      "label": "Session picker",
+      "text": "Every running emulator session (DevBench's own, ./3do run windows, headless MCP sessions); every tab shows the one chosen here."
+    },
+    {
+      "box": [
+        751,
+        22,
+        546,
+        46
+      ],
+      "label": "Status pills",
+      "text": "Run mode (running / paused), guest frame counter and CPU state (running, or HALTED in red at a breakpoint)."
+    },
+    {
+      "box": [
+        1699,
+        19,
+        1153,
+        52
+      ],
+      "label": "Run controls",
+      "text": "Run (real time), Turbo, Pause, +1 frame / +60, CPU halt (debugger freeze), Reset and Reboot for the selected session."
+    },
+    {
+      "box": [
+        2091,
+        227,
+        496,
+        56
+      ],
+      "label": "Address",
+      "text": "A number, symbol or symbol+offset and a length; \u25c0 \u25b6 page through (MCP: emu_read_mem)."
+    },
+    {
+      "box": [
+        54,
+        353,
+        2772,
+        538
+      ],
+      "label": "Hex dump",
+      "text": "Hex + ASCII of guest memory (here the code at hud_draw). DRAM 0\u20130x1FFFFF, VRAM 0x200000+, ROM 0x3000000+."
+    },
+    {
+      "box": [
+        28,
+        945,
+        1398,
+        507
+      ],
+      "label": "Search DRAM",
+      "text": "Find text or hex bytes in DRAM."
+    },
+    {
+      "box": [
+        54,
+        1123,
+        1346,
+        302
+      ],
+      "label": "Hits",
+      "text": "Matches with the symbol each falls in (here the \"RELIC\" strings); click to dump."
+    },
+    {
+      "box": [
+        1454,
+        945,
+        1398,
+        222
+      ],
+      "label": "Write",
+      "text": "Write a 32-bit word into guest DRAM/VRAM, e.g. to change a variable while the game runs."
+    }
+  ]
+}

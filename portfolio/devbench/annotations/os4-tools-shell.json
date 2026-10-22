@@ -1,0 +1,18 @@
+{
+  "image": "../os4-tools-shell.png",
+  "output": "../os4-tools-shell-annotated.png",
+  "title": "DevBench — Tools · Shell",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        22,
+        402,
+        3156,
+        282
+      ],
+      "label": "Shell proxy",
+      "text": "Interactive AmigaDOS shell via the shell_proxy bridge client. It isn't running in this capture, so the tab offers to launch it."
+    }
+  ]
+}

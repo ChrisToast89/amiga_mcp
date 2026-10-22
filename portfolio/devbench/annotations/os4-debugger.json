@@ -1,0 +1,78 @@
+{
+  "image": "../os4-debugger.png",
+  "output": "../os4-debugger-annotated.png",
+  "title": "DevBench — Debugger",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        22,
+        410,
+        3156,
+        72
+      ],
+      "label": "Target & symbols",
+      "text": "Pick a bridge client, Launch / Attach / Launch & Attach / Detach, and load the project's symbols (MCP: amiga_debug_attach / amiga_load_symbols)."
+    },
+    {
+      "box": [
+        22,
+        478,
+        3156,
+        74
+      ],
+      "label": "Run control",
+      "text": "Continue (F5), Break (F9), Step Into (F11), Step Over (F10) (MCP: amiga_continue / amiga_step / amiga_next)."
+    },
+    {
+      "box": [
+        3049,
+        490,
+        129,
+        50
+      ],
+      "label": "State",
+      "text": "Detached here: no program is attached in this capture."
+    },
+    {
+      "box": [
+        22,
+        548,
+        1745,
+        1630
+      ],
+      "label": "Source view",
+      "text": "Source files from the symbols; click the gutter to set breakpoints."
+    },
+    {
+      "box": [
+        1767,
+        548,
+        1411,
+        123
+      ],
+      "label": "Registers",
+      "text": "CPU registers when the target is stopped."
+    },
+    {
+      "box": [
+        1767,
+        667,
+        1411,
+        235
+      ],
+      "label": "Call stack & variables",
+      "text": "Backtrace and locals at the stop (MCP: amiga_backtrace)."
+    },
+    {
+      "box": [
+        1767,
+        898,
+        1411,
+        1280
+      ],
+      "label": "Breakpoints",
+      "text": "Add by address or function name (MCP: amiga_set_breakpoint)."
+    }
+  ]
+}
