@@ -19,4 +19,6 @@ Set up with the bridge hook `scene tanks`: farmland with a red-roofed house, pin
 ![Terra Strike landed on the pad](terra_strike-gameplay-3.png)
 Set up with the bridge hook `scene landing`: the jet sits on the yellow and grey checkered landing pad with "LANDED - UP TO LIFT OFF" on screen, ALT 20, SPD 0, SCORE 000300, TARGETS 6.
 
+There is also an [AmigaOS 4.1 version](../../amigaos4-ppc/terra_strike/terra_strike.md) built from the same source.
+
 **Controls:** Arrows / joystick: turn, climb / dive (the craft hovers when released). A / Z: throttle up / down. Space / fire: cannon (aims itself at a target within about 22 degrees of the nose). P: pause. Return / F1: start. Esc: title / quit.
