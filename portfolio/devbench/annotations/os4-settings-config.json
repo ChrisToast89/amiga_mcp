@@ -1,0 +1,58 @@
+{
+  "image": "../os4-settings-config.png",
+  "output": "../os4-settings-config-annotated.png",
+  "title": "DevBench — Settings · Config",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        1268,
+        488,
+        300,
+        180
+      ],
+      "label": "Serial link",
+      "text": "TCP or PTY, and the host:port the emulator exposes the Amiga serial port on."
+    },
+    {
+      "box": [
+        848,
+        666,
+        720,
+        168
+      ],
+      "label": "Emulator",
+      "text": "Emulator binary / launcher, its config file, and whether devbench starts it."
+    },
+    {
+      "box": [
+        1522,
+        832,
+        46,
+        52
+      ],
+      "label": "Crash handler",
+      "text": "Enable the bridge's crash handler automatically when the daemon starts."
+    },
+    {
+      "box": [
+        748,
+        882,
+        820,
+        60
+      ],
+      "label": "Deploy dir",
+      "text": "Where builds are deployed: a shared folder (68k) or the dev HDF written with xdftool (OS4)."
+    },
+    {
+      "box": [
+        1602,
+        402,
+        1576,
+        1014
+      ],
+      "label": "Emulator config editor",
+      "text": "Edits the FS-UAE config file named in the profile (Save, Reload, Save & Restart). Empty here: the qemu-os4 profile launches QEMU through a script and has no FS-UAE config."
+    }
+  ]
+}

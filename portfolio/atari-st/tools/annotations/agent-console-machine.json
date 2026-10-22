@@ -1,0 +1,89 @@
+{
+  "image": "../agent-console-machine.png",
+  "output": "../agent-console-machine-annotated.png",
+  "title": "Hatari agent console \u2014 Machine tab",
+  "subtitle": "Hatari agent console (tools/agent/hatari_gui.py) \u00b7 Falcon030 running Spectral Keep \u00b7 agent API :7790",
+  "legend": "bottom",
+  "items": [
+    {
+      "box": [
+        0,
+        13,
+        1435,
+        51
+      ],
+      "label": "Toolbar",
+      "text": "Pause, Resume, run one frame or one second, cold reset and save a screenshot, plus a fast-forward toggle; each is one agent API call."
+    },
+    {
+      "box": [
+        10,
+        84,
+        1283,
+        960
+      ],
+      "label": "Live emulator screen",
+      "text": "The /screen image polled every 150 ms at 1-3x zoom; clicking, dragging and typing on it are sent to the Atari as mouse and key input."
+    },
+    {
+      "box": [
+        1613,
+        99,
+        612,
+        41
+      ],
+      "label": "Tabs",
+      "text": "Console, Joystick, Debugger and Machine."
+    },
+    {
+      "box": [
+        1382,
+        213,
+        1077,
+        434
+      ],
+      "label": "TOS ROMs",
+      "text": "The ROM images in the agent ROM directory with their EmuTOS version and country."
+    },
+    {
+      "box": [
+        1382,
+        663,
+        1035,
+        44
+      ],
+      "label": "Boot a machine",
+      "text": "Pick a machine type and RAM size and cold-boot the selected ROM."
+    },
+    {
+      "box": [
+        1382,
+        743,
+        940,
+        102
+      ],
+      "label": "Media",
+      "text": "Insert a floppy image, mount a host folder as GEMDOS drive C: or set the program to autostart."
+    },
+    {
+      "box": [
+        1382,
+        876,
+        1073,
+        95
+      ],
+      "label": "Hatari options",
+      "text": "Any Hatari command-line options, applied through POST /config (may reset the machine)."
+    },
+    {
+      "box": [
+        0,
+        1058,
+        1690,
+        38
+      ],
+      "label": "Status line",
+      "text": "Emulator state, frame counter, PC, machine and TOS, screen mode, the GEM mouse position and the last debugger stop, from GET /status."
+    }
+  ]
+}

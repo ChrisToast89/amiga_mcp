@@ -1,0 +1,78 @@
+{
+  "image": "../68k-inspect-graphics.png",
+  "output": "../68k-inspect-graphics-annotated.png",
+  "title": "DevBench — Inspect · Graphics",
+  "subtitle": "AmigaOS 3.x on FS-UAE · profile local-fsuae · :3001",
+  "items": [
+    {
+      "box": [
+        22,
+        402,
+        628,
+        835
+      ],
+      "label": "Screenshot",
+      "text": "Capture the whole screen or one window via the bridge (MCP: amiga_screenshot)."
+    },
+    {
+      "box": [
+        684,
+        587,
+        568,
+        76
+      ],
+      "label": "Palette",
+      "text": "The screen's colour registers as swatches (MCP: amiga_get_palette / amiga_set_palette)."
+    },
+    {
+      "box": [
+        1316,
+        587,
+        1200,
+        620
+      ],
+      "label": "Copper list",
+      "text": "The active copper list (GfxBase ActiView → LOFCprList) decoded instruction by instruction (MCP: amiga_copper_list)."
+    },
+    {
+      "box": [
+        2580,
+        587,
+        568,
+        68
+      ],
+      "label": "Sprite inspector",
+      "text": "Hardware sprite state, including the Intuition mouse pointer (MCP: amiga_sprites)."
+    },
+    {
+      "box": [
+        22,
+        1265,
+        1260,
+        307
+      ],
+      "label": "Bitmap viewer",
+      "text": "Render raw planar memory at an address as an image."
+    },
+    {
+      "box": [
+        1286,
+        1265,
+        1260,
+        307
+      ],
+      "label": "IFF viewer",
+      "text": "Decode an ILBM file on the Amiga and show it."
+    },
+    {
+      "box": [
+        22,
+        1600,
+        1260,
+        233
+      ],
+      "label": "Visual diff",
+      "text": "Capture A and B and highlight changed pixels."
+    }
+  ]
+}

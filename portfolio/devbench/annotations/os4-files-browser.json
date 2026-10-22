@@ -1,0 +1,58 @@
+{
+  "image": "../os4-files-browser.png",
+  "output": "../os4-files-browser-annotated.png",
+  "title": "DevBench — Files · Browser",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        22,
+        402,
+        520,
+        1596
+      ],
+      "label": "Volumes & assigns",
+      "text": "Mounted volumes and standard assigns; click one to list it (MCP: amiga_list_volumes)."
+    },
+    {
+      "box": [
+        548,
+        404,
+        2628,
+        74
+      ],
+      "label": "Current path",
+      "text": "Breadcrumb of the directory being listed."
+    },
+    {
+      "box": [
+        548,
+        458,
+        2628,
+        72
+      ],
+      "label": "Columns",
+      "text": "Name, size, date, protection bits and per-file actions."
+    },
+    {
+      "box": [
+        548,
+        510,
+        2628,
+        1488
+      ],
+      "label": "Directory listing",
+      "text": "LISTDIR result from the bridge (MCP: amiga_list_dir)."
+    },
+    {
+      "box": [
+        2696,
+        1683,
+        460,
+        50
+      ],
+      "label": "File actions",
+      "text": "Per-file buttons: View, Edit (text), Run (executables), CRC, Ren(ame), Copy (MCP: amiga_read_file / amiga_run / amiga_checksum / amiga_rename / amiga_copy)."
+    }
+  ]
+}

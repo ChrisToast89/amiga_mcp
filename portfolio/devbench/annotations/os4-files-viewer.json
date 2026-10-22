@@ -1,0 +1,28 @@
+{
+  "image": "../os4-files-viewer.png",
+  "output": "../os4-files-viewer-annotated.png",
+  "title": "DevBench — Files · File viewer",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        692,
+        192,
+        1816,
+        92
+      ],
+      "label": "File & close",
+      "text": "Path of the Amiga file being viewed, and Close."
+    },
+    {
+      "box": [
+        692,
+        264,
+        1816,
+        1544
+      ],
+      "label": "Contents",
+      "text": "The file read over the bridge — here S:Startup-Sequence (MCP: amiga_read_file)."
+    }
+  ]
+}

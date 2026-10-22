@@ -1,0 +1,118 @@
+{
+  "image": "../debug.png",
+  "output": "../debug-annotated.png",
+  "title": "3DO DevBench \u2014 Debug",
+  "subtitle": "Spectral Keep running in the patched Opera emulator \u00b7 ./3do devbench \u00b7 :3330",
+  "items": [
+    {
+      "box": [
+        299,
+        16,
+        428,
+        58
+      ],
+      "label": "Session picker",
+      "text": "Every running emulator session (DevBench's own, ./3do run windows, headless MCP sessions); every tab shows the one chosen here."
+    },
+    {
+      "box": [
+        751,
+        22,
+        532,
+        46
+      ],
+      "label": "Status pills",
+      "text": "Run mode (running / paused), guest frame counter and CPU state (running, or HALTED in red at a breakpoint)."
+    },
+    {
+      "box": [
+        1639,
+        19,
+        1213,
+        52
+      ],
+      "label": "Run controls",
+      "text": "Run (real time), Turbo, Pause, +1 frame / +60, CPU halt (debugger freeze), Reset and Reboot for the selected session."
+    },
+    {
+      "box": [
+        28,
+        201,
+        2824,
+        80
+      ],
+      "label": "Stop banner",
+      "text": "Shown whenever the CPU stops (breakpoint, watchpoint, halt): why and where, with continue buttons."
+    },
+    {
+      "box": [
+        54,
+        392,
+        548,
+        842
+      ],
+      "label": "Registers",
+      "text": "r0\u2013r15 and CPSR; pc and lr symbolised (MCP: emu_regs)."
+    },
+    {
+      "box": [
+        682,
+        441,
+        2144,
+        720
+      ],
+      "label": "Disassembly",
+      "text": "ARM disassembly around the PC with symbol offsets; => marks the PC, click a line to toggle a breakpoint (MCP: emu_disasm)."
+    },
+    {
+      "box": [
+        28,
+        1480,
+        1398,
+        449
+      ],
+      "label": "Break / watch / trace",
+      "text": "Type a symbol or address: + break stops there (here hud_draw), + trace logs calls with r0\u2013r3, + watch stops on memory access (MCP: emu_break / emu_watch / emu_trace)."
+    },
+    {
+      "box": [
+        1454,
+        1480,
+        1398,
+        728
+      ],
+      "label": "Symbols",
+      "text": "Program symbols at their relocated runtime addresses, with break and mem shortcuts (MCP: emu_symbols)."
+    },
+    {
+      "box": [
+        28,
+        2236,
+        1538,
+        1394
+      ],
+      "label": "SWI snoop",
+      "text": "Every system call the game and OS made, named from the SDK headers, with counts, caller and arguments (MCP: emu_syscalls)."
+    },
+    {
+      "box": [
+        1594,
+        2236,
+        1258,
+        888
+      ],
+      "label": "Profiler",
+      "text": "Samples the PC inside N frames and shows CPU share per function, OS/ROM and idle grouped (MCP: emu_profile)."
+    },
+    {
+      "box": [
+        28,
+        3658,
+        2824,
+        153
+      ],
+      "label": "Crashes",
+      "text": "Aborts and exceptions reported by the OS, with registers and log context (MCP: emu_crashes)."
+    }
+  ]
+}

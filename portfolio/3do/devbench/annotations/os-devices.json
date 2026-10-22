@@ -1,0 +1,98 @@
+{
+  "image": "../os-devices.png",
+  "output": "../os-devices-annotated.png",
+  "title": "3DO DevBench \u2014 OS \u00b7 Devices & I/O + item detail",
+  "subtitle": "Spectral Keep running in the patched Opera emulator \u00b7 ./3do devbench \u00b7 :3330",
+  "items": [
+    {
+      "box": [
+        299,
+        16,
+        428,
+        58
+      ],
+      "label": "Session picker",
+      "text": "Every running emulator session (DevBench's own, ./3do run windows, headless MCP sessions); every tab shows the one chosen here."
+    },
+    {
+      "box": [
+        28,
+        201,
+        2824,
+        59
+      ],
+      "label": "OS views",
+      "text": "Each view walks a different Portfolio OS structure in guest RAM: tasks, items, ports, semaphores, devices, folios, graphics, audio, files, memory map, snapshots."
+    },
+    {
+      "box": [
+        2084,
+        310,
+        320,
+        56
+      ],
+      "label": "Filter",
+      "text": "Filter the table by any text (name, type, address)."
+    },
+    {
+      "box": [
+        2420,
+        318,
+        270,
+        40
+      ],
+      "label": "Auto-refresh",
+      "text": "Reload the view every 2 s while the game runs."
+    },
+    {
+      "box": [
+        54,
+        404,
+        2772,
+        620
+      ],
+      "label": "Devices",
+      "text": "Devices with the driver behind each and its open count."
+    },
+    {
+      "box": [
+        54,
+        1061,
+        2772,
+        511
+      ],
+      "label": "Drivers",
+      "text": "Loaded device drivers."
+    },
+    {
+      "box": [
+        54,
+        1610,
+        2772,
+        1055
+      ],
+      "label": "I/O requests",
+      "text": "Every IOReq: owner, device, command, unit, bytes transferred, error, and pending (orange) or done."
+    },
+    {
+      "box": [
+        54,
+        2807,
+        2772,
+        375
+      ],
+      "label": "Item detail",
+      "text": "Clicking any row: the item's common node fields and its type-specific fields (here a device) (MCP: os_item(n))."
+    },
+    {
+      "box": [
+        54,
+        3296,
+        2772,
+        819
+      ],
+      "label": "Raw node",
+      "text": "The item's raw bytes, with a link that opens its memory in the Memory tab."
+    }
+  ]
+}

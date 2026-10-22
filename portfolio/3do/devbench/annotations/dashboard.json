@@ -1,0 +1,88 @@
+{
+  "image": "../dashboard.png",
+  "output": "../dashboard-annotated.png",
+  "title": "3DO DevBench \u2014 Dashboard",
+  "subtitle": "Spectral Keep running in the patched Opera emulator \u00b7 ./3do devbench \u00b7 :3330",
+  "items": [
+    {
+      "box": [
+        299,
+        16,
+        428,
+        58
+      ],
+      "label": "Session picker",
+      "text": "Every running emulator session (DevBench's own, ./3do run windows, headless MCP sessions); every tab shows the one chosen here."
+    },
+    {
+      "box": [
+        751,
+        22,
+        532,
+        46
+      ],
+      "label": "Status pills",
+      "text": "Run mode (running / paused), guest frame counter and CPU state (running, or HALTED in red at a breakpoint)."
+    },
+    {
+      "box": [
+        1699,
+        19,
+        1153,
+        52
+      ],
+      "label": "Run controls",
+      "text": "Run (real time), Turbo, Pause, +1 frame / +60, CPU halt (debugger freeze), Reset and Reboot for the selected session."
+    },
+    {
+      "box": [
+        0,
+        92,
+        2880,
+        81
+      ],
+      "label": "Tabs",
+      "text": "Dashboard, Screen, OS, Debug, Memory, Console and API."
+    },
+    {
+      "box": [
+        28,
+        201,
+        1558,
+        307
+      ],
+      "label": "Sessions",
+      "text": "pid, disc, control and gdb ports and whether it has a desktop window; select makes it current, stop ends it."
+    },
+    {
+      "box": [
+        54,
+        423,
+        1243,
+        59
+      ],
+      "label": "Start a session",
+      "text": "Pick a disc, optional desktop window, running or paused (stepped by scripts/agents) and the BIOS (MCP: emu_boot)."
+    },
+    {
+      "box": [
+        1614,
+        201,
+        1238,
+        1247
+      ],
+      "label": "OS summary",
+      "text": "Read straight from the 3DO kernel in guest RAM: KernelBase, current task, live items vs the item table, DRAM/VRAM in use, items per type (MCP: os_overview)."
+    },
+    {
+      "box": [
+        28,
+        1476,
+        2824,
+        1733
+      ],
+      "label": "Projects",
+      "text": "Every project in projects/ with build (compiler output below), run (session on its ISO) and test (its test.py)."
+    }
+  ]
+}

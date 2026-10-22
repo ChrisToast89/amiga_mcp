@@ -1,0 +1,78 @@
+{
+  "image": "../os4-inspect-graphics.png",
+  "output": "../os4-inspect-graphics-annotated.png",
+  "title": "DevBench — Inspect · Graphics",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        22,
+        402,
+        628,
+        299
+      ],
+      "label": "Screenshot",
+      "text": "Capture the whole screen or one window via the bridge (MCP: amiga_screenshot)."
+    },
+    {
+      "box": [
+        654,
+        402,
+        628,
+        299
+      ],
+      "label": "Palette",
+      "text": "Read the screen's colour registers (MCP: amiga_get_palette)."
+    },
+    {
+      "box": [
+        1286,
+        402,
+        1260,
+        299
+      ],
+      "label": "Copper list",
+      "text": "Decodes the active copper list (MOVE/WAIT/SKIP) — a classic-chipset feature (MCP: amiga_copper_list)."
+    },
+    {
+      "box": [
+        2550,
+        402,
+        628,
+        299
+      ],
+      "label": "Sprite inspector",
+      "text": "Hardware sprite state (MCP: amiga_sprites)."
+    },
+    {
+      "box": [
+        22,
+        729,
+        1260,
+        307
+      ],
+      "label": "Bitmap viewer",
+      "text": "Render raw planar memory at an address as an image."
+    },
+    {
+      "box": [
+        1286,
+        729,
+        1260,
+        307
+      ],
+      "label": "IFF viewer",
+      "text": "Decode an ILBM file on the Amiga and show it."
+    },
+    {
+      "box": [
+        22,
+        1064,
+        1260,
+        233
+      ],
+      "label": "Visual diff",
+      "text": "Capture A and B and highlight changed pixels."
+    }
+  ]
+}

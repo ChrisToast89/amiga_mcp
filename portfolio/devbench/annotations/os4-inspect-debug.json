@@ -1,0 +1,88 @@
+{
+  "image": "../os4-inspect-debug.png",
+  "output": "../os4-inspect-debug-annotated.png",
+  "title": "DevBench — Inspect · Debug",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        22,
+        402,
+        1260,
+        299
+      ],
+      "label": "Symbol table",
+      "text": "Load a project's symbols, look up addresses, list functions and structs (MCP: amiga_load_symbols / amiga_lookup_symbol)."
+    },
+    {
+      "box": [
+        1286,
+        402,
+        1260,
+        299
+      ],
+      "label": "Disassembler",
+      "text": "Disassemble memory, annotated with symbols when loaded (MCP: amiga_disassemble)."
+    },
+    {
+      "box": [
+        22,
+        729,
+        1260,
+        259
+      ],
+      "label": "Crash report",
+      "text": "Bridge crash handler: enable, check the last crash (MCP: amiga_last_crash)."
+    },
+    {
+      "box": [
+        22,
+        1016,
+        1260,
+        289
+      ],
+      "label": "Memory map",
+      "text": "Exec memory lists: regions, attributes and free/used (MEMMAP)."
+    },
+    {
+      "box": [
+        22,
+        1016,
+        2524,
+        620
+      ],
+      "label": "Memory search / stack / diff",
+      "text": "Search for a byte pattern, check a task's stack use, snapshot and diff memory."
+    },
+    {
+      "box": [
+        1286,
+        1333,
+        1892,
+        303
+      ],
+      "label": "Chip registers & audio",
+      "text": "Classic custom-chip state (DMACON, INTENA…) and Paula channels — meaningful on 68k targets."
+    },
+    {
+      "box": [
+        22,
+        1664,
+        2524,
+        235
+      ],
+      "label": "SnoopDos & chip logger",
+      "text": "Trace OpenLibrary/Open/Lock… calls via SetFunction patches; log custom-chip writes."
+    },
+    {
+      "box": [
+        22,
+        1664,
+        3156,
+        498
+      ],
+      "label": "Resources, profiler, pools",
+      "text": "Per-client resource tracking, performance report and memory-pool tracking (MCP: amiga_list_resources / amiga_perf_report)."
+    }
+  ]
+}

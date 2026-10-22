@@ -1,0 +1,58 @@
+{
+  "image": "../os4-tools-memory.png",
+  "output": "../os4-tools-memory-annotated.png",
+  "title": "DevBench — Tools · Memory",
+  "subtitle": "AmigaOS 4.1 on QEMU sam460ex · profile qemu-os4 · :3000",
+  "items": [
+    {
+      "box": [
+        141,
+        402,
+        515,
+        78
+      ],
+      "label": "Address & size",
+      "text": "Start address (hex) and byte count to read."
+    },
+    {
+      "box": [
+        814,
+        413,
+        305,
+        56
+      ],
+      "label": "Annotate registers",
+      "text": "Labels known custom-chip / CIA registers in the dump."
+    },
+    {
+      "box": [
+        130,
+        488,
+        786,
+        120
+      ],
+      "label": "Bookmarks",
+      "text": "One-click addresses: CIA-A/B, ExecBase pointer, ROM start, vectors."
+    },
+    {
+      "box": [
+        22,
+        612,
+        3156,
+        78
+      ],
+      "label": "Write",
+      "text": "Write hex bytes to an address (RAM only, validated with TypeOfMem) (MCP: amiga_write_memory)."
+    },
+    {
+      "box": [
+        22,
+        686,
+        3156,
+        1312
+      ],
+      "label": "Hex dump",
+      "text": "Hex + ASCII view of the bytes read through the bridge (MCP: amiga_inspect_memory)."
+    }
+  ]
+}
