@@ -7,7 +7,7 @@
 [fs-uae]
 
 # Kickstart ROM (encrypted, needs rom.key in same dir)
-kickstart_file = /Users/chris/Documents/FS-UAE/Kickstarts/kick.rom
+kickstart_file = ~/Documents/FS-UAE/Kickstarts/kick.rom
 
 # CPU: 68020 + FPU
 amiga_model = A1200
@@ -20,7 +20,7 @@ fast_memory = 8192
 
 # Hard drives
 # DH0: = minimal bootable system
-hard_drive_0 = /Users/chris/Documents/FS-UAE/Hard Drives/System
+hard_drive_0 = ~/Documents/FS-UAE/Hard Drives/System
 hard_drive_0_label = System
 
 # DH1: = AmiKit's installed OS files (for extra libs/devs if needed)

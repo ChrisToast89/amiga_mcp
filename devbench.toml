@@ -90,7 +90,7 @@ pty_path = "/tmp/amiga-serial"
 
 [emulator]
 binary = "auto"
-config = "/Users/chris/Documents/FS-UAE/Configurations/AmiKit-Debug.fs-uae"
+config = "~/Documents/FS-UAE/Configurations/AmiKit-Debug.fs-uae"
 auto_start = false
 
 [server]

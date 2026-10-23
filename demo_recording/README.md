@@ -28,7 +28,7 @@ Traffic entry opened to its MCP request/response. Beat 11 also shows the
 wire protocol of the first kill, verbatim from `logs/bridge_protocol.log`.
 
 **Narration**: `narration.py` writes one line per beat and synthesises it with
-the local Kokoro runtime (`/Users/chris/code/claude_world/kokoro_runtime`,
+the local Kokoro runtime (`~/code/claude_world/kokoro_runtime`,
 voice `bf_emma`, British English, speed 1.08). `make_short.py` stretches any
 beat whose line runs long, starts each line 0.35 s into its beat, and
 loudness-normalises the voice track (-16 LUFS). The script text is in

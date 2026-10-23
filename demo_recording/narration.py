@@ -4,7 +4,7 @@
 One line per beat of make_short.py, spoken by bf_emma (British female, en-gb).
 Writes video/short/narr_NN.wav and video/short/narration.json (durations),
 which make_short.py reads to stretch any beat whose line runs long.
-Kokoro server: /Users/chris/code/claude_world/kokoro_runtime (127.0.0.1:8770).
+Kokoro server: ~/code/claude_world/kokoro_runtime (127.0.0.1:8770).
 """
 import json, os, subprocess, urllib.request
 

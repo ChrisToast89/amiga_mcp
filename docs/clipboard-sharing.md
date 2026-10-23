@@ -32,8 +32,8 @@ ln -s "$PWD/scripts/qpaste" /usr/local/bin/
 export PATH="$HOME/code/claude_world/amiga_mcp/scripts:$PATH"
 
 # ...or one-shot aliases in ~/.zshrc
-alias qclip='/Users/chris/code/claude_world/amiga_mcp/scripts/qclip'
-alias qpaste='/Users/chris/code/claude_world/amiga_mcp/scripts/qpaste'
+alias qclip='~/code/claude_world/amiga_mcp/scripts/qclip'
+alias qpaste='~/code/claude_world/amiga_mcp/scripts/qpaste'
 ```
 
 The scripts have no dependencies beyond `curl`, `python3`, and
