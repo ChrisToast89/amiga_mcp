@@ -3278,7 +3278,7 @@ def create_app(args: Any, cfg: DevBenchConfig | None = None) -> Starlette:
         candidates = [
             Path.home() / ".amiga-devbench" / "fsuae_remote_patch" / "tools" / "uss_diff.py",
             Path.home() / "code" / "fsuae_remote_patch" / "tools" / "uss_diff.py",
-            Path("/Users/chris/code/claude_world/fsuae_remote_patch/tools/uss_diff.py"),
+            Path.home() / "code" / "claude_world" / "fsuae_remote_patch" / "tools" / "uss_diff.py",
             Path("/tmp/fsuae-src/uss_diff.py"),
         ]
         for c in candidates:
