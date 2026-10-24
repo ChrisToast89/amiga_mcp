@@ -102,9 +102,11 @@ if [ "$TARGET" = all ] || [ "$TARGET" = 68k ]; then
     if [ -n "$CONF" ] && [ -f "$CONF" ]; then
         ok "FS-UAE config: $CONF"
         KICK=$(sed -n 's/^kickstart_file *= *//p' "$CONF" | head -1)
+        KICK=${KICK/#\~/$HOME}        # FS-UAE expands a leading ~ in its paths
         if [ -n "$KICK" ] && [ -f "$KICK" ]; then ok "Kickstart ROM: $KICK"
         else bad "Kickstart ROM not found (${KICK:-kickstart_file not set})" "copy your Kickstart 3.x ROM (e.g. from Amiga Forever) and set kickstart_file in $CONF"; fi
         HD=$(sed -n 's/^hard_drive_0 *= *//p' "$CONF" | head -1)
+        HD=${HD/#\~/$HOME}
         if [ -n "$HD" ] && [ -e "$HD" ]; then ok "System disk: $HD"
         else bad "AmigaOS 3.x system disk not found (${HD:-hard_drive_0 not set})" "install AmigaOS 3.x / AmiKit and set hard_drive_0 in $CONF (see /fsuae-setup)"; fi
         SP=$(sed -n 's/^serial_port *= *//p' "$CONF" | head -1)
