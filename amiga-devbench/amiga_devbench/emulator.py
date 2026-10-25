@@ -232,6 +232,12 @@ class EmulatorManager:
             logger.error("Failed to start emulator: %s", e)
             return False
 
+    @property
+    def owns_process(self) -> bool:
+        """True while the emulator is a child process this devbench started itself (not one
+        found running, nor one a launcher script started and left behind)."""
+        return self._process is not None and self._process.returncode is None
+
     async def stop(self) -> bool:
         """Stop FS-UAE gracefully. Returns True if stopped."""
         if not self.is_running:

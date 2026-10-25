@@ -267,7 +267,7 @@ def _tool(fn):
 def _state(payload: str) -> dict[str, Any]:
     kv = keyvalues(payload)
     st: dict[str, Any] = dict(kv)
-    for k in ("line", "col", "documents", "modified", "errors", "warnings", "sessions",
+    for k in ("line", "col", "documents", "modified", "errors", "failures", "warnings", "sessions",
               "stopline", "exitcode", "frame"):
         if k in st:
             st[k] = _int(st[k])
@@ -474,7 +474,7 @@ async def amiforge_open_project(path: str, port: str = DEFAULT_PORT) -> dict:
 @mcp.tool()
 @_tool
 async def amiforge_new_project(template: str, name: str, drawer: str, port: str = DEFAULT_PORT) -> dict:
-    """Create a project from a template (ids from amiforge_projects, e.g. "shell") in
+    """Create a project from a template (ids from amiforge_projects, e.g. "console-c", "reaction-app") in
     <drawer>/<name> and open it. name: a C identifier-like name. Returns the new project."""
     async with _lock:
         afp = await _call_unlocked(

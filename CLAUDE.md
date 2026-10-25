@@ -228,6 +228,13 @@ Run one devbench per emulator on different HTTP ports, e.g. OS4 on 3000
 (`--profile local-fsuae --port 3001`). Each keeps its own PID file
 (`/tmp/amiga-devbench[-PORT].pid`), so starting one no longer kills the other.
 
+Stopping or restarting a devbench leaves its emulator running unless the
+emulator is still that devbench's own child process. Before this change, a
+devbench shut down with SIGTERM also killed any running QEMU it could find,
+including one that isn't its child (here, the QEMU behind the qemu-os4 profile
+that `scripts/start.sh` brought up), which took the guest down. To stop the emulator, use
+`scripts/start.sh stop` (POST `/api/emulator/stop`).
+
 ## Testing Without Emulator
 ```bash
 python3 -m amiga_devbench --simulator   # Starts with fake Amiga on TCP 1234

@@ -1486,8 +1486,14 @@ def create_app(args: Any, cfg: DevBenchConfig | None = None) -> Starlette:
                 _conn.disconnect()
             if _builder:
                 await _builder.shutdown()
-            if _emulator and _emulator.is_running:
+            # Stop only an emulator that is our own child. One found running (e.g. QEMU that a
+            # launcher script started and left behind) is left alone: restarting the devbench
+            # must not kill a guest. POST /api/emulator/stop (scripts/start.sh stop) still stops it.
+            if _emulator and getattr(_emulator, "owns_process", False):
                 await _emulator.stop()
+            elif _emulator and _emulator.is_running:
+                logger.info("Leaving the emulator running (not started by this devbench process); "
+                            "stop it with POST /api/emulator/stop")
             if sim:
                 await sim.stop()
             logger.info("Shut down complete")
