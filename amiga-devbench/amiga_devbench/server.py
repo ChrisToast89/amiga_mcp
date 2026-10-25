@@ -31,6 +31,7 @@ from . import file_transfer
 from .emulator import EmulatorManager
 from .fsuae_rpc import FsuaeRpcClient
 from .mcp_tools import mcp, init_tools
+from . import amiforge_tools  # noqa: F401  (registers the amiforge_* MCP tools)
 from .persistent_log import PersistentLog
 from .protocol import format_hex_dump, level_name
 from .serial_conn import SerialConnection

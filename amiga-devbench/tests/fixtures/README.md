@@ -35,3 +35,8 @@ import asyncio
 from amiga_devbench.mcp_tools import mcp
 print("\n".join(sorted(t.name for t in asyncio.run(mcp.list_tools()))))
 ```
+
+## `amiforge_tools.txt`
+
+The `amiforge_*` tool names (`amiga_devbench/amiforge_tools.py`), sorted, generated the
+same way (filtered on the `amiforge_` prefix).
