@@ -34,6 +34,7 @@ from .winuae_debug import WinuaeDebugger
 from .winuae_tools import init_winuae_tools
 from .winuae_api import make_winuae_endpoint
 from .mcp_tools import mcp, init_tools
+from . import amiforge_tools  # noqa: F401  (registers the amiforge_* MCP tools)
 from .persistent_log import PersistentLog
 from .protocol import format_hex_dump, level_name
 from .serial_conn import SerialConnection
@@ -59,6 +60,20 @@ _dbg_state: DebuggerState | None = None
 _dbg_stepping = False  # True while step/next is in progress (blocks other serial commands)
 _gdb_server: GDBServer | None = None
 _fsuae_rpc: FsuaeRpcClient | None = None
+
+
+async def shutdown_emulator(emulator) -> None:
+    """At devbench shutdown: stop only an emulator that is this devbench's own (a child process,
+    or a remote one it brought up), and only that process - never one found running, such as QEMU
+    that a launcher script started and left behind. Restarting the devbench must not kill a
+    guest. POST /api/emulator/stop (scripts/start.sh stop) still stops any emulator."""
+    if not emulator:
+        return
+    if getattr(emulator, "owns_process", False):
+        await emulator.stop(owned_only=True)
+    elif emulator.is_running:
+        logger.info("Leaving the emulator running (not started by this devbench process); "
+                    "stop it with POST /api/emulator/stop")
 
 
 def _build_fsuae_env(cfg: DevBenchConfig) -> dict[str, str]:
@@ -1499,8 +1514,7 @@ def create_app(args: Any, cfg: DevBenchConfig | None = None) -> Starlette:
                 _conn.disconnect()
             if _builder:
                 await _builder.shutdown()
-            if _emulator and _emulator.is_running:
-                await _emulator.stop()
+            await shutdown_emulator(_emulator)
             if sim:
                 await sim.stop()
             logger.info("Shut down complete")

@@ -183,6 +183,49 @@ Drives one Amiga task through the bridge daemon. See the
 | `amiga_arexx_ports` | — | List all ARexx message ports (running ARexx-aware apps) |
 | `amiga_arexx_send` | `port`, `command` | Send an ARexx command to a named port and get the result |
 
+### AmiForge IDE (`amiforge_*`, AmigaOS 4.1)
+
+Drive [AmiForge](https://github.com/geekychris/amiforge), the native AmigaOS 4.1 PPC IDE, running
+on the guest: projects, reading and editing files, builds with their errors, runs, and its
+source-level debugger. Implemented in `amiga_devbench/amiforge_tools.py` on top of the ARexx
+bridge: each tool sends `MCP <command>` to AmiForge's ARexx port and parses the paged, escaped
+`AF1 rc more length payload` reply into JSON, so newlines, `|` and results longer than a bridge
+line survive the trip. Every tool returns a JSON string; failures are
+`{"ok": false, "error": "..."}` with AmiForge's own reason (or "AmiForge isn't running: start it
+with amiforge_launch"). Every tool except `amiforge_screenshot` also takes `port` (default `AMIFORGE`; a second copy is
+`AMIFORGE.1`, or whatever it was started with as `AmiForge REXXPORT=name`).
+
+| Tool | Parameters | Description |
+|---|---|---|
+| `amiforge_status` | — | Project, current file and cursor, open files (modified?), build state/result, debugger state and stop location, captured run |
+| `amiforge_launch` | `path?`, `project?`, `wait_seconds?` | Start AmiForge (default `DH1:AmiForge/AmiForge`) if its port is missing and wait for it |
+| `amiforge_projects` | `depth?` | Projects in the projects folder, and the project templates |
+| `amiforge_open_project` | `path` | Open an `.afp` (fails with the reason, e.g. unsaved changes) |
+| `amiforge_new_project` | `template`, `name`, `drawer` | Create a project from a template and open it |
+| `amiforge_project_info` | — | Project settings and files |
+| `amiforge_open_file` | `path`, `line?` | Bring a file to the front at a line |
+| `amiforge_read_file` | `path?`, `from_line?`, `to_line?`, `numbered?` | File text as the editor has it (unsaved changes included), numbered |
+| `amiforge_edit` | `path`, `old_text`, `new_text`, `replace_all?` | Exact-text replacement in the editor (unique match unless `replace_all`); not saved |
+| `amiforge_edit_lines` | `path`, `from_line`, `to_line`, `text` | Replace / insert / delete whole lines |
+| `amiforge_save` / `amiforge_revert` | — / `path?` | Save all modified files / reload one from disk |
+| `amiforge_build` | `mode?` (build/rebuild/clean), `wait?`, `timeout?` | Build and wait: result, counts, diagnostics with file:line:col and explanations |
+| `amiforge_errors` / `amiforge_build_log` | `include_all?` / `tail?` | Last build's diagnostics / log |
+| `amiforge_run` | `build?`, `capture_output?`, `wait_seconds?` | Build and run; captured output (`T:AmiForge-mcp-run.txt`) |
+| `amiforge_run_output` / `amiforge_stop_program` | — | Output so far / Ctrl-C the captured run |
+| `amiforge_debug` | `action`, `file?`, `line?`, `stop_at_main?`, `build?`, `wait?`, `timeout?` | start, continue, step, next, step_out, run_to, pause, stop, state; waits for the stop and returns location, source, locals (and the crash explanation) |
+| `amiforge_breakpoint` | `action` (set/clear/clear_all/list), `file?`, `line?`, `condition?` | Project breakpoints |
+| `amiforge_locals` / `amiforge_stack` | — / `select_frame?` | Locals of the selected frame / the call stack |
+| `amiforge_eval` | `expression`, `children?` | Evaluate a C expression in the stopped program |
+| `amiforge_registers` | — | PowerPC registers |
+| `amiforge_symbols` / `amiforge_references` | `path?` / `name` | File outline / uses of an identifier |
+| `amiforge_git_status` | — | Repository, branch, changed files |
+| `amiforge_screenshot` | `window?` | Same as `amiga_screenshot` |
+| `amiforge_command` | `command` | Any AmiForge ARexx command, MCP-wrapped |
+
+The full guide (setup, example sessions, limits and safety, the wire format) is in AmiForge's
+user guide, section "Controlling AmiForge from an AI assistant (MCP)". Tests:
+`amiga-devbench/tests/test_amiforge_tools.py` (a fake bridge and IDE, no Amiga needed).
+
 ### Font Browser
 
 Available via the web UI (Tools > Inspect > Font Browser). Enumerates installed Amiga

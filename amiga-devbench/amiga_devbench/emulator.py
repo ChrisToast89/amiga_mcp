@@ -292,12 +292,23 @@ class EmulatorManager:
             logger.error("Failed to start emulator: %s", e)
             return False
 
-    async def stop(self) -> bool:
-        """Stop FS-UAE gracefully. Returns True if stopped."""
-        if not self.is_running:
-            return True
+    @property
+    def owns_process(self) -> bool:
+        """True while the emulator is a child process this devbench started itself (not one
+        found running, nor one a launcher script started and left behind)."""
+        return self._process is not None and self._process.returncode is None
 
+    async def stop(self, owned_only: bool = False) -> bool:
+        """Stop FS-UAE gracefully. Returns True if stopped.
+
+        owned_only (devbench shutdown): stop only the child process this devbench started.
+        If that child has already exited - e.g. a launcher script that left QEMU running -
+        nothing else is looked for or stopped."""
         if self._process is None or self._process.returncode is not None:
+            if owned_only:
+                return True
+            if not self.is_running:
+                return True
             return await self._stop_external()
 
         pid = self._process.pid

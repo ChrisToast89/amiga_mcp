@@ -22,6 +22,7 @@ profile + target arch as a coloured badge.
 - **amiga-bridge/**: Amiga-side daemon + client library (libbridge.a). Owns serial.device, IPC via MsgPorts.
   - `amiga-bridge/client/`: Client library apps link against (`ab_init`, `ab_log`, `ab_poll`, etc.)
 - **amiga-devbench/**: Host-side Python server (MCP + web UI + serial protocol).
+  - `amiga_devbench/amiforge_tools.py`: the `amiforge_*` MCP tools that drive the [AmiForge](https://github.com/geekychris/amiforge) IDE through its ARexx port (tests: `tests/test_amiforge_tools.py`; reference: `docs/mcp-tools.md`).
   - Run: `scripts/start.sh` (both targets; see SETUP.md) or `make devbench` (one, active profile)
   - Serves the web UI and MCP (`/mcp`) on the port its profile is started with: `scripts/start.sh` uses :3000 for AmigaOS 4 (qemu-os4) and :3001 for classic 68k (local-fsuae); a plain `python3 -m amiga_devbench` uses :3000
 - **examples/**: Git submodule — sample Amiga programs (games, demos, tools) using bridge client lib. Lives at [github.com/geekychris/amiga_games](https://github.com/geekychris/amiga_games). Clone with `--recurse-submodules` or run `git submodule update --init` after cloning.
@@ -229,6 +230,15 @@ Run one devbench per emulator on different HTTP ports, e.g. OS4 on 3000
 (`--profile qemu-os4 --no-emulator`) and FS-UAE on 3001
 (`--profile local-fsuae --port 3001`). Each keeps its own PID file
 (`/tmp/amiga-devbench[-PORT].pid`), so starting one no longer kills the other.
+
+Stopping or restarting a devbench leaves its emulator running unless the
+emulator is still that devbench's own child process (for an `emulator_ssh`
+remote emulator: unless that devbench brought it up itself), and then it stops
+only that process. Before this change, a
+devbench shut down with SIGTERM also killed any running QEMU it could find,
+including one that isn't its child (here, the QEMU behind the qemu-os4 profile
+that `scripts/start.sh` brought up), which took the guest down. To stop the emulator, use
+`scripts/start.sh stop` (POST `/api/emulator/stop`).
 
 ## Testing Without Emulator
 ```bash

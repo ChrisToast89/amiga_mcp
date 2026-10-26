@@ -98,7 +98,8 @@ def test_mcp_tool_registration_golden():
 
     expected = (FIXTURES / "mcp_tools_v94a8888.txt").read_text().split()
     assert len(expected) == 129
-    actual = sorted(t.name for t in asyncio.run(mcp.list_tools()))
+    # the amiga_ group; the amiforge_ tools (amiforge_tools.py) have their own list below
+    actual = sorted(t.name for t in asyncio.run(mcp.list_tools()) if not t.name.startswith("amiforge_"))
     added = {
         "amiga_winuae_autosnap", "amiga_winuae_backtrace", "amiga_winuae_bitmap",
         "amiga_winuae_breakpoint", "amiga_winuae_capture", "amiga_winuae_checkpoint",
@@ -118,6 +119,15 @@ def test_mcp_tool_registration_golden():
     assert set(actual) - set(expected) == added, "unexpected tool additions"
     assert set(expected) - set(actual) == set(), "tools removed"
     assert [name for name in actual if name not in added] == expected
+
+
+def test_amiforge_tool_registration_golden():
+    from amiga_devbench import amiforge_tools  # noqa: F401  (registers them)
+    from amiga_devbench.mcp_tools import mcp
+
+    expected = (FIXTURES / "amiforge_tools.txt").read_text().split()
+    actual = sorted(t.name for t in asyncio.run(mcp.list_tools()) if t.name.startswith("amiforge_"))
+    assert actual == expected
 
 
 def test_ready_handshake_publishes_event_and_sends_nothing():
@@ -155,6 +165,7 @@ def test_silence_watchdog_constants_and_placement():
 def test_all():
     for fn in (test_bridge_v1_20_68k, test_bridge_v1_20_ppc, test_bridge_v1_16,
                test_advertised_lists_golden, test_mcp_tool_registration_golden,
+               test_amiforge_tool_registration_golden,
                test_ready_handshake_publishes_event_and_sends_nothing,
                test_silence_watchdog_constants_and_placement):
         fn()
