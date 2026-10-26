@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 """HTTP adapter; all debugger policy and serialization live in the backend."""
 import json
+from urllib.parse import urlsplit
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 from .winuae_debug import WinuaeDebugger, DebugError
@@ -9,6 +10,11 @@ from .winuae_debug import WinuaeDebugger, DebugError
 def make_winuae_endpoint(debugger: WinuaeDebugger):
     async def endpoint(request: Request) -> JSONResponse:
         action = request.path_params['action']
+        # Browsers send Origin with cross-site requests; refuse those, so a web
+        # page cannot drive the debugger. Scripts without Origin still work.
+        origin = request.headers.get('origin')
+        if origin and urlsplit(origin).netloc != request.headers.get('host'):
+            return JSONResponse({'ok': False, 'error': 'Cross-origin requests are not allowed'}, status_code=403)
         if request.method == 'GET' and action != 'status':
             return JSONResponse({'ok': False, 'error': 'Use POST for debugger operations'}, status_code=405)
         try:

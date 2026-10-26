@@ -10,7 +10,7 @@ connection for files and AmigaDOS commands.
 |---|---|---|
 | Guest files, commands, tasks and registered application variables | `amiga-bridge` in the guest | `amiga-bridge` in the guest |
 | Native debugger tools and dashboard | `amiga_winuae_*` / WinUAE tab, requires WinUAE 6.1.0 | `amiga_fsuae_*` / FS-UAE tab, requires patched build |
-| Local launch through DevBench's emulator manager | Launch WinUAE separately | FS-UAE-oriented launcher |
+| Local launch through DevBench's emulator manager | `[emulator] binary` pointing to WinUAE, with floppy changes | FS-UAE-oriented launcher |
 
 ## Keep separate profiles
 

@@ -49,15 +49,15 @@ Talks to the patched [fs-uae build](https://github.com/geekychris/fsuae_remote_p
 
 | Capability | Bridge | FS-UAE | WinUAE |
 |---|---|---|---|
-| Pause / step / continue | ✓ | ✓ | ✓ (plus step over) |
-| Source-level (file:line, locals, backtrace) | ✓ | — | — |
-| Function-name breakpoints (via symbol load) | ✓ | by address only | by address only |
-| Hardware-style watchpoints (R/W/I, mustchange) | — | ✓ | CPU read/write ranges |
+| Pause / step / continue | ✓ | ✓ | ✓ (plus step over, step out, range stepping) |
+| Source-level (file:line, locals, backtrace) | ✓ | — | ✓ with DWARF from a linked ELF file |
+| Function-name breakpoints (via symbol load) | ✓ | by address only | ✓ |
+| Hardware-style watchpoints (R/W/I, mustchange) | — | ✓ | ✓ (plus DMA sources and an access log) |
 | Read Kickstart ROM | — | ✓ | ✓ |
-| Read/write 68k regs (D0-D7, A0-A7, PC, SR, USP, ISP) | partial (task ctx) | ✓ (live CPU) | D0-D7, A0-A7, PC, SR (live CPU) |
+| Read/write 68k regs (D0-D7, A0-A7, PC, SR, USP, ISP) | partial (task ctx) | ✓ (live CPU) | ✓ (live CPU, plus MSP) |
 | Memory map (chip/fast/ROM/IO/unmapped) | — | ✓ | ✓ |
-| Chipset register snapshot | partial (inspector) | ✓ | raw registers via memory reads |
-| State snapshot save/load (.uss) | — | ✓ | — |
+| Chipset register snapshot | partial (inspector) | ✓ | ✓ (plus Copper lists) |
+| State snapshot save/load (.uss) | — | ✓ | ✓ (saved at the next frame start) |
 | Exec tasks, loaded segments, program-entry and exception stops | — | — | ✓ |
 | Works when OS has crashed | — | ✓ | ✓ |
 | Works without bridge running | — | ✓ | ✓ |
@@ -70,5 +70,6 @@ You can mix them: set a hardware watchpoint with a native debugger to find *wher
 ## WinUAE native debugging
 
 The additional [WinUAE backend](winuae-debugger.md) provides native CPU, memory,
-breakpoint, process and exception controls through the WinUAE tab and MCP.
-It uses GDB directly and works without a running guest bridge.
+breakpoint, watch, chipset, checkpoint, input, process and exception controls
+through the WinUAE tab and MCP, covering everything the FS-UAE backend offers.
+It uses WinUAE's GDB server directly and works without a running guest bridge.
