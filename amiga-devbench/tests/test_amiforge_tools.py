@@ -362,3 +362,65 @@ def test_tools_are_registered_with_json_results():
         assert name in tools, name
     assert set(tools["amiforge_edit"].inputSchema["properties"]) == {"path", "old_text", "new_text",
                                                                     "replace_all", "port"}
+
+
+# ─── review fixes ───
+
+def test_garbled_envelope_header_is_an_amiforge_error():
+    for bad in ("AF1 x 0 3 abc", "AF1 0 -1 0 ", "AF1 0 0 -2 "):
+        try:
+            af.parse_envelope(bad)
+            assert False, bad
+        except af.AmiForgeError as e:
+            assert "malformed" in str(e)
+
+
+def test_status_with_a_garbled_reply_is_ok_false():
+    ide, conn = _setup()
+    ide.envelope = lambda rc, payload: "AF1 x 0 3 abc"
+    r = _run(af.amiforge_status())
+    assert r["ok"] is False and "malformed" in r["error"]
+
+
+def test_paging_that_never_ends_is_stopped():
+    ide, conn = _setup()
+    ide.more = lambda: "AF1 0 5 0 "          # an empty page that still says "5 more"
+    ide.CHUNK = 4
+    r = _run(af.amiforge_status())
+    assert r["ok"] is False and "did not end" in r["error"]
+
+
+def test_mcpmore_failure_is_reported():
+    ide, conn = _setup()
+    ide.CHUNK = 4
+    real = ide.arexx
+    ide.arexx = lambda command: (5, "") if command == "MCPMORE" else real(command)
+    r = _run(af.amiforge_status())
+    assert r["ok"] is False and "MCPMORE failed" in r["error"]
+
+
+def test_launch_starts_amiforge_when_its_port_is_missing():
+    """amiforge_launch decides "not running" by exception type, not by the message text."""
+    assert issubclass(af.AmiForgeNotRunning, af.AmiForgeError)
+    ide, conn = _setup(ports=())
+    r = _run(af.amiforge_launch(wait_seconds=1.0))
+    assert any(m["type"] == "LAUNCH" for m in conn.sent)     # it tried to start AmiForge
+    assert r["ok"] is False and "didn't answer" in r["error"]
+
+
+def test_failed_screenshot_is_ok_false(monkeypatch):
+    _setup()
+
+    async def failed(window=""):
+        return "Error: screen capture timed out"
+
+    monkeypatch.setattr(mcp_tools, "amiga_screenshot", failed)
+    r = _run(af.amiforge_screenshot())
+    assert r["ok"] is False and "timed out" in r["error"]
+
+    async def ok(window=""):
+        return "Screenshot saved: /tmp/x.png (640x480, png, 480 rows received)"
+
+    monkeypatch.setattr(mcp_tools, "amiga_screenshot", ok)
+    r = _run(af.amiforge_screenshot())
+    assert r["ok"] is True and r["result"].startswith("Screenshot saved")

@@ -193,6 +193,8 @@ Line-based text protocol over serial/TCP, pipe-delimited fields.
 - Sample FS-UAE config: `AmiKit-Debug.fs-uae` in project root (copy and customize)
 - Key setting: `serial_port = tcp://0.0.0.0:1234` enables serial-over-TCP
 - Emulator config path goes in `devbench.toml` under `[emulator] config = "..."`
+- WinUAE's native debugger is configured in `[winuae_debug]` (`enabled`, `host`,
+  `port`; profiles use `winuae_debug_*`); see `docs/winuae-debugger.md`
 - Once running, edit FS-UAE config from web UI: Settings tab → FS-UAE Config Editor
 - AmiKit users: run `./scripts/configure-amikit.sh` for automatic setup
 - See `/fsuae-setup` skill for detailed walkthrough
@@ -229,7 +231,9 @@ Run one devbench per emulator on different HTTP ports, e.g. OS4 on 3000
 (`/tmp/amiga-devbench[-PORT].pid`), so starting one no longer kills the other.
 
 Stopping or restarting a devbench leaves its emulator running unless the
-emulator is still that devbench's own child process. Before this change, a
+emulator is still that devbench's own child process (for an `emulator_ssh`
+remote emulator: unless that devbench brought it up itself), and then it stops
+only that process. Before this change, a
 devbench shut down with SIGTERM also killed any running QEMU it could find,
 including one that isn't its child (here, the QEMU behind the qemu-os4 profile
 that `scripts/start.sh` brought up), which took the guest down. To stop the emulator, use

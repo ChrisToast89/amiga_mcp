@@ -57,6 +57,10 @@ class AmiForgeError(Exception):
         self.rc = rc
 
 
+class AmiForgeNotRunning(AmiForgeError):
+    """There is no AmiForge ARexx port by that name on the Amiga."""
+
+
 # ─── escaping (mirrors AmiForge's src/ide/McpCmd.cpp) ───
 
 _ESC = {"\\": "\\\\", "\n": "\\n", "\t": "\\t", "\r": "\\r", "|": "\\p", '"': "\\q"}
@@ -117,7 +121,12 @@ def parse_envelope(line: str) -> tuple[int, int, str]:
     parts = line[4:].split(" ", 3)
     if len(parts) < 3:
         raise AmiForgeError(f"malformed AmiForge reply: {line[:80]!r}", rc=0)
-    rc, more, length = int(parts[0]), int(parts[1]), int(parts[2])
+    try:
+        rc, more, length = int(parts[0]), int(parts[1]), int(parts[2])
+    except ValueError:
+        raise AmiForgeError(f"malformed AmiForge reply: {line[:80]!r}", rc=0) from None
+    if more < 0 or length < 0:
+        raise AmiForgeError(f"malformed AmiForge reply: {line[:80]!r}", rc=0)
     body = parts[3] if len(parts) > 3 else ""
     if len(body) < length:                 # the transport strips trailing spaces
         body += " " * (length - len(body))
@@ -184,7 +193,7 @@ async def _arexx(port: str, command: str, timeout: float = AREXX_TIMEOUT) -> tup
                     continue
                 msg = data.get("message", "")
                 if "not found" in msg or "disappeared" in msg:
-                    raise AmiForgeError(
+                    raise AmiForgeNotRunning(
                         f"AmiForge isn't running: there is no ARexx port {port} on the Amiga. "
                         "Start AmiForge there (amiforge_launch), then try again.", rc=0)
                 if "timed out" in msg:
@@ -204,15 +213,24 @@ async def _call_unlocked(command: str, port: str) -> str:
             "with the MCP commands?", rc=0)
     erc, more, payload = parse_envelope(result)
     parts = [payload]
+    pages = 0
     while more > 0:
         rc, result = await _arexx(port, "MCPMORE")
+        if rc != 0:
+            raise AmiForgeError(f"MCPMORE failed (ARexx RC {rc})", rc=0)
         _rc2, more, chunk = parse_envelope(result)
+        pages += 1
+        # a reply is at most a few hundred pages; an empty page that still says "more" would loop forever
+        if pages > MAX_PAGES or (not chunk and more > 0):
+            raise AmiForgeError("AmiForge's paged reply did not end", rc=0)
         parts.append(chunk)
     payload = "".join(parts)
     if erc != 0:
         raise AmiForgeError(payload or f"command failed (RC {erc})", rc=erc)
     return payload
 
+
+MAX_PAGES = 1000
 
 _TOKEN = re.compile(r"\\x[0-9A-Fa-f]{2}|\\.|.", re.S)
 
@@ -410,9 +428,8 @@ async def amiforge_launch(path: str = DEFAULT_LAUNCH, project: str = "", port: s
         async with _lock:
             st = await _get_state(port)
         return {"started": False, "message": f"AmiForge is already running on port {port}", "state": st}
-    except AmiForgeError as e:
-        if "isn't running" not in str(e):
-            raise
+    except AmiForgeNotRunning:
+        pass
     conn, _s, bus = _mt._require_connected()
     q = lambda p: f'"{p}"' if " " in p else p   # the bridge checks the program exists
     cmd = q(path)
@@ -853,6 +870,9 @@ async def amiforge_screenshot(window: str = "") -> dict:
     """A screenshot of the Amiga screen (or of one window, by title) to see AmiForge, the
     running program or a requester. Returns the image file path on the host."""
     result = await _mt.amiga_screenshot(window)
+    # amiga_screenshot reports failures as text, not exceptions
+    if not str(result).startswith("Screenshot saved: "):
+        raise AmiForgeError(str(result), rc=0)
     return {"result": result}
 
 

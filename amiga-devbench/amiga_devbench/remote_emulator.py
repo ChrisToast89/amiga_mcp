@@ -60,6 +60,7 @@ class RemoteEmulatorController:
         name: str = "remote emulator",
     ) -> None:
         self._ssh = ssh
+        self._started_by_us = False   # owns_process: we brought it up (not found running)
         self._start_cmd = start_cmd
         self._stop_cmd = stop_cmd
         self._status_cmd = status_cmd
@@ -109,6 +110,12 @@ class RemoteEmulatorController:
 
     # ─── Lifecycle ────────────────────────────────────────────────────
 
+    @property
+    def owns_process(self) -> bool:
+        """True when this devbench brought the remote emulator up (start_cmd or reboot),
+        not when it found it already running."""
+        return self._started_by_us
+
     async def start(self) -> bool:
         """Bring the remote emulator up, escalating from start_cmd → reboot."""
         if await self._probe_running(fresh=True):
@@ -129,6 +136,7 @@ class RemoteEmulatorController:
                     self._name, rc, err.strip()[:200],
                 )
             if await self._wait_ready(START_READY_TIMEOUT_SEC):
+                self._started_by_us = True
                 self._started_at = time.time()
                 self._publish_status()
                 self._start_poll_task()
@@ -143,6 +151,7 @@ class RemoteEmulatorController:
         # A reboot cuts our SSH session; ignore rc.
         await self._run_ssh(self._reboot_cmd, timeout=REBOOT_CMD_TIMEOUT_SEC)
         if await self._wait_ready(REBOOT_READY_TIMEOUT_SEC):
+            self._started_by_us = True
             self._started_at = time.time()
             self._publish_status()
             self._start_poll_task()
@@ -152,8 +161,11 @@ class RemoteEmulatorController:
         self._publish_status()
         return False
 
-    async def stop(self) -> bool:
-        """Stop the remote emulator via stop_cmd (if configured)."""
+    async def stop(self, owned_only: bool = False) -> bool:
+        """Stop the remote emulator via stop_cmd (if configured). owned_only (devbench
+        shutdown): only if this devbench started it."""
+        if owned_only and not self._started_by_us:
+            return True
         if not self._stop_cmd:
             logger.warning("%s: no stop_cmd configured; cannot stop", self._name)
             return False
@@ -169,6 +181,7 @@ class RemoteEmulatorController:
         running = await self._probe_running(fresh=True)
         if not running:
             self._started_at = None
+            self._started_by_us = False
             self._publish_status()
         return not running
 
