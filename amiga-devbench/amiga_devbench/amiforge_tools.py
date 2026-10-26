@@ -237,6 +237,14 @@ _TOKEN = re.compile(r"\\x[0-9A-Fa-f]{2}|\\.|.", re.S)
 
 async def _put_text(text: str, slot: int, port: str) -> str:
     """A value for a text argument: inline, or via MCPBUF slot `slot` when long."""
+    # AmiForge's files are Latin-1: escape() would turn anything else into "?" and the edit
+    # would silently write question marks into the source
+    bad = sorted({c for c in text if ord(c) > 0xFF})
+    if bad:
+        shown = " ".join(f"{c!r} (U+{ord(c):04X})" for c in bad[:8])
+        raise AmiForgeError(
+            f"the text has characters that aren't Latin-1, which AmiForge's files can't hold: "
+            f"{shown}. Use plain ASCII instead (e.g. '-' for a dash, '->' for an arrow).", rc=0)
     esc = escape(text)
     if len(esc) <= INLINE_MAX:
         return esc

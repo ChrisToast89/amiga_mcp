@@ -204,12 +204,16 @@ class RemoteEmulatorController:
             rc, _, _ = await self._run_ssh(self._status_cmd, timeout=6.0)
             self._is_running_cached = (rc == 0)
             self._last_probe_at = time.time()
+            if not self._is_running_cached:
+                self._started_by_us = False   # ours is gone; a later one isn't ours to stop
             return self._is_running_cached
 
         # No SSH-side signal — fall back to a TCP probe. Only used when
         # status_cmd is empty, or in _wait_ready during a bring-up.
         tcp_ok = await self._tcp_ready()
         self._is_running_cached = tcp_ok
+        if not tcp_ok and not fresh:
+            self._started_by_us = False       # a poll found it gone: a later one isn't ours
         self._last_probe_at = time.time() if fresh or tcp_ok else None
         return tcp_ok
 

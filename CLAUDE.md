@@ -22,6 +22,7 @@ profile + target arch as a coloured badge.
 - **amiga-bridge/**: Amiga-side daemon + client library (libbridge.a). Owns serial.device, IPC via MsgPorts.
   - `amiga-bridge/client/`: Client library apps link against (`ab_init`, `ab_log`, `ab_poll`, etc.)
 - **amiga-devbench/**: Host-side Python server (MCP + web UI + serial protocol).
+  - `amiga_devbench/amiforge_tools.py`: the `amiforge_*` MCP tools that drive the [AmiForge](https://github.com/geekychris/amiforge) IDE through its ARexx port (tests: `tests/test_amiforge_tools.py`; reference: `docs/mcp-tools.md`).
   - Run: `scripts/start.sh` (both targets; see SETUP.md) or `make devbench` (one, active profile)
   - Serves the web UI and MCP (`/mcp`) on the port its profile is started with: `scripts/start.sh` uses :3000 for AmigaOS 4 (qemu-os4) and :3001 for classic 68k (local-fsuae); a plain `python3 -m amiga_devbench` uses :3000
 - **examples/**: Git submodule — sample Amiga programs (games, demos, tools) using bridge client lib. Lives at [github.com/geekychris/amiga_games](https://github.com/geekychris/amiga_games). Clone with `--recurse-submodules` or run `git submodule update --init` after cloning.

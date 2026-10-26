@@ -20,6 +20,13 @@ class _Proc:
         self.returncode = rc
         self.pid = 4242
         self.waited = False
+        self.terminated = False
+
+    def terminate(self):          # the Windows stop path
+        self.terminated = True
+
+    def kill(self):
+        self.terminated = True
 
     async def wait(self):
         self.waited = True
@@ -67,15 +74,19 @@ def test_shutdown_leaves_an_adopted_emulator_running():
 
 
 def test_shutdown_stops_its_own_child(monkeypatch):
-    em = _Manager()
-    em._process = _Proc(None)
     import os
     import signal as _signal
+    em = _Manager()
+    proc = _Proc(None)
+    em._process = proc
     killed = []
-    monkeypatch.setattr(os, "getpgid", lambda pid: pid)
-    monkeypatch.setattr(os, "killpg", lambda pg, sig: killed.append((pg, sig)))
+    monkeypatch.setattr(os, "getpgid", lambda pid: pid, raising=False)   # POSIX only
+    monkeypatch.setattr(os, "killpg", lambda pg, sig: killed.append((pg, sig)), raising=False)
     _run(server.shutdown_emulator(em))
-    assert killed and killed[0] == (4242, _signal.SIGTERM)
+    if os.name == "nt":
+        assert proc.terminated
+    else:
+        assert killed and killed[0] == (4242, _signal.SIGTERM)
     assert em.external_stops == 0
 
 
@@ -135,4 +146,17 @@ def test_remote_emulator_we_started_is_stopped_at_shutdown(monkeypatch):
     assert rc.owns_process
     _run(server.shutdown_emulator(rc))
     assert calls == ["stop"]
+    assert rc.owns_process is False
+
+
+def test_remote_ownership_ends_when_the_poll_finds_it_gone():
+    """A replacement started by someone else after ours died must not be stopped at shutdown."""
+    rc = RemoteEmulatorController(ssh="user@host", start_cmd="start", stop_cmd="stop", status_cmd="status")
+    rc._started_by_us = True
+
+    async def gone(cmd, timeout=0):
+        return 1, "", ""
+
+    rc._run_ssh = gone
+    _run(rc._probe_running())
     assert rc.owns_process is False

@@ -424,3 +424,11 @@ def test_failed_screenshot_is_ok_false(monkeypatch):
     monkeypatch.setattr(mcp_tools, "amiga_screenshot", ok)
     r = _run(af.amiforge_screenshot())
     assert r["ok"] is True and r["result"].startswith("Screenshot saved")
+
+
+def test_edit_rejects_text_that_isnt_latin1():
+    ide, conn = _setup()
+    before = len(conn.sent)
+    r = _run(af.amiforge_edit("DH1:p/main.c", "return 0;", "return 1; // → done"))
+    assert r["ok"] is False and "Latin-1" in r["error"] and "U+2192" in r["error"]
+    assert not any("SUBST" in m.get("command", "") for m in conn.sent[before:])
