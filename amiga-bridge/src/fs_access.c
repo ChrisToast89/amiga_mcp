@@ -194,8 +194,16 @@ int fs_write_file(const char *path, ULONG offset,
     BPTR fh;
     LONG seekResult;
     LONG written;
+    struct Process *pr;
+    APTR oldWinPtr;
 
     if (!path || !data) return -1;
+
+    /* Suppress "Please insert volume" requesters: a write to a missing
+     * volume must fail fast instead of blocking the bridge main loop. */
+    pr = (struct Process *)FindTask(NULL);
+    oldWinPtr = pr->pr_WindowPtr;
+    pr->pr_WindowPtr = (APTR)-1;
 
     if (offset > 0) {
         /* Open existing file for read/write */
@@ -204,6 +212,8 @@ int fs_write_file(const char *path, ULONG offset,
         /* Create or truncate */
         fh = Open((CONST_STRPTR)path, MODE_NEWFILE);
     }
+
+    pr->pr_WindowPtr = oldWinPtr;
 
     if (!fh) return -1;
 
