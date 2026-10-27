@@ -116,6 +116,17 @@ def test_pull_retries_short_read(tmp_path):
     assert res.crc_match is True
 
 
+def test_push_fails_fast_on_bridge_err(tmp_path):
+    """An explicit ERR from the bridge (e.g. unknown volume) must stop the push
+    at once - no per-chunk retries, no reconnect/resume loop."""
+    res, conn = _push(tmp_path, b"ABCDEFGH", {
+        "err": [{"type": "ERR", "context": "WRITEFILE failed", "message": "ZZZ:test"}],
+    })
+    assert not res.success
+    assert "rejected" in res.message and "ZZZ:test" in res.message, res.message
+    assert len([m for m in conn.sent if m["type"] == "WRITEFILE"]) == 1
+
+
 def test_all():
     import tempfile, pathlib
     for fn in (test_short_write_is_retried, test_multichunk_uses_offsets_never_append,

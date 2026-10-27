@@ -31,6 +31,10 @@ MAX_RETRIES = 6
 CHUNK_TIMEOUT = 5.0
 
 
+class BridgeWriteError(Exception):
+    """The bridge explicitly rejected a WRITEFILE (ERR reply) - not retryable."""
+
+
 async def _push_chunk(conn, bus, path: str, offset: int, chunk: bytes) -> bool:
     """Write one chunk at an explicit offset and confirm the daemon wrote
     exactly len(chunk) bytes, retrying on timeout/err/short-write.
@@ -44,11 +48,38 @@ async def _push_chunk(conn, bus, path: str, offset: int, chunk: bytes) -> bool:
     expect = len(chunk)
     hex_data = chunk.hex()
     for _ in range(MAX_RETRIES):
-        conn.send({"type": "WRITEFILE", "path": path, "offset": offset, "hexData": hex_data})
-        ok = await bus.wait_for(
+        # Listen for the OK *and* an ERR at the same time: the daemon replies
+        # "ERR|WRITEFILE failed|<path>" when it cannot open/write the file.
+        ok_t = asyncio.ensure_future(bus.wait_for(
             "ok", timeout=CHUNK_TIMEOUT,
             predicate=lambda d: d.get("context") == "WRITEFILE",
-        )
+        ))
+        err_t = asyncio.ensure_future(bus.wait_for(
+            "err", timeout=CHUNK_TIMEOUT,
+            predicate=lambda d: str(d.get("context", "")).startswith("WRITEFILE"),
+        ))
+        await asyncio.sleep(0)  # let both subscriptions register before sending
+        conn.send({"type": "WRITEFILE", "path": path, "offset": offset, "hexData": hex_data})
+        ok = err = None
+        pending = {ok_t, err_t}
+        try:
+            while pending and not (ok or err):
+                done, pending = await asyncio.wait(pending, return_when=asyncio.FIRST_COMPLETED)
+                ok = ok_t.result() if ok_t in done else ok
+                err = err_t.result() if err_t in done else err
+        finally:
+            for t in pending:
+                t.cancel()
+        if err and not ok:
+            # "needs path|offset|hexdata" means the request line arrived
+            # mangled (lossy serial) - retry. Anything else is an explicit
+            # refusal from the Amiga (bad volume, write-protected, ...) that
+            # a resend cannot fix, so fail fast instead of retrying for minutes.
+            if "needs path" not in str(err.get("message", "")):
+                raise BridgeWriteError(
+                    f"{err.get('context', 'WRITEFILE')}: {err.get('message', '')}".strip()
+                )
+            ok = None
         if ok:
             try:
                 wrote = int(str(ok.get("message", "")).split("|")[0])
@@ -57,11 +88,6 @@ async def _push_chunk(conn, bus, path: str, offset: int, chunk: bytes) -> bool:
             if wrote == expect:
                 return True
             logger.warning("chunk@%d short write %d/%d, retrying", offset, wrote, expect)
-        else:
-            await bus.wait_for(
-                "err", timeout=0.3,
-                predicate=lambda d: d.get("context") == "WRITEFILE",
-            )
         # Let any corrupt partial line flush through the daemon's line parser
         # (its terminating newline resyncs the stream) before re-sending.
         await asyncio.sleep(0.05)
@@ -111,7 +137,16 @@ async def push_file(
 
     while offset < total:
         chunk = data[offset:offset + chunk_size]
-        if await _push_chunk(conn, bus, amiga_path, offset, chunk):
+        try:
+            pushed = await _push_chunk(conn, bus, amiga_path, offset, chunk)
+        except BridgeWriteError as e:
+            return TransferResult(
+                False,
+                f"Amiga rejected write to {amiga_path} at offset {offset}/{total}: {e}",
+                bytes_transferred=offset,
+                elapsed=time.monotonic() - t0,
+            )
+        if pushed:
             offset += len(chunk)
             chunk_num += 1
             continue
